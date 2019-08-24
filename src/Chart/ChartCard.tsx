@@ -2,7 +2,7 @@ import React       from "react"        ;
 import ChartEdit   from "./ChartEdit"  ;
 import ChartDelete from "./ChartDelete";
 
-import { IChart } from "../Types/ChartTypes";
+import { IChart } from "../Types/ChartType";
 
 import ChartVisualize from "./ChartVisualize";
 

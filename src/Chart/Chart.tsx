@@ -1,10 +1,9 @@
 import React         from "react"           ;
 import ChartCard     from "./ChartCard"     ;
 import ChartPrompt   from "./ChartPrompt"   ;
-import DisplaySensor from "../DisplaySensor";
+import DisplaySensor from "./DisplaySensor";
 
-import { IChart } from "../Types/ChartTypes";
-import { charts } from "../mock";
+import { IChart } from "../Types/ChartType";
 
 import { BrowserRouter as Router, Route } from "react-router-dom";
 

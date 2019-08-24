@@ -1,8 +1,8 @@
 import React from "react";
-import { Button, Modal, Form, FormText, FormLabel, FormControl } from "react-bootstrap"
+import { Button, Modal, Form, FormText, FormLabel } from "react-bootstrap"
 
 import { IPrompt } from "../Types/PromptType";
-import { IDataSource } from "../Types/DataSourceTypes";
+import { IDataSource } from "../Types/DataSourceType";
 
 // A interface IProps.
 interface IProps {

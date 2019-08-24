@@ -1,5 +1,5 @@
-import { IChart } from "./Types/ChartTypes";
-import { IDataSource } from "./Types/DataSourceTypes";
+import { IChart } from "./Types/ChartType";
+import { IDataSource } from "./Types/DataSourceType";
 
 let charts: IChart[] = [
 

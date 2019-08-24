@@ -1,6 +1,7 @@
 import React from "react";
 
-import BarChart from "./Graph/BarChart";
+import BarChart from "../Graph/BarChart";
+
 
 interface IProps {
 
@@ -19,8 +20,8 @@ export default class DisplaySensor extends React.Component<IProps, IState> {
     }
 
     render() {
-        return <div>
-            <BarChart chart={null} width={400} height={400}/>
+        return <div style={{"width": "100%", "height": 400}}>
+            <BarChart chart={null} width={"100%"} height={400}/>
         </div>;
     }
 }

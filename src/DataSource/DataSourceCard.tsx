@@ -3,7 +3,7 @@ import DataSourceDelete     from "./DataSourceDelete";
 import DataSourceEdit       from "./DataSourceEdit"  ;
 import DataSourceTest       from "./DataSourceTest"  ;
 
-import { IDataSource } from "../Types/DataSourceTypes";
+import { IDataSource } from "../Types/DataSourceType";
 
 // A interface IProps.
 interface IProps {

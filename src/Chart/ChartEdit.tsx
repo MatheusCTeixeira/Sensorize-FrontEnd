@@ -1,7 +1,7 @@
 import React from "react";
 import { Button, Modal, FormLabel, FormText } from "react-bootstrap";
 
-import { IChart } from "../Types/ChartTypes";
+import { IChart } from "../Types/ChartType";
 import { Form } from "react-bootstrap";
 
 /* ────────────────────────────────────────────────────────────────────────── */

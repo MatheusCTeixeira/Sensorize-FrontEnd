@@ -2,7 +2,7 @@ import React from "react";
 import DataSourceCard from "./DataSourceCard";
 import DataSourcePrompt from "./DataSourcePrompt";
 
-import { IDataSource } from "../Types/DataSourceTypes";
+import { IDataSource } from "../Types/DataSourceType";
 
 // A interface IProps.
 interface IProps {
@@ -16,12 +16,14 @@ interface IState extends IProps {
 
 // Componente que encapsula tudo a respeito da Fonte de dados.
 export default class DataSource extends React.Component<IProps, IState> {
-    state: IState = {
-        dataSources: Array<IDataSource>(),
-    }
+    state: IState;
 
-    constructor(props: any) {
+    constructor(props: IProps) {
         super(props);
+
+        this.state = {
+            dataSources: new Array<IDataSource>()
+        };
     }
 
     // Adiciona uma nova Data Source.

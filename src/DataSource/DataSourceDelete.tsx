@@ -1,7 +1,7 @@
 import React from "react";
 import { Button, Modal } from "react-bootstrap";
 
-import { IDataSource } from "../Types/DataSourceTypes";
+import { IDataSource } from "../Types/DataSourceType";
 
 // A interface IProps.
 interface IProps {

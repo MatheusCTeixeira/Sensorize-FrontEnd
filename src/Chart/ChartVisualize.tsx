@@ -1,7 +1,7 @@
 import React from "react";
-import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 
-import { IChart } from "../Types/ChartTypes";
+import { IChart } from "../Types/ChartType";
 
 /* ────────────────────────────────────────────────────────────────────────── */
 
@@ -27,7 +27,9 @@ export default class ChartVisualize extends React.Component<IProps, IState> {
 
     render(): React.ReactNode {
         return (<>
-        <Link to={`/chart/${this.state.chart.id}`} className="btn text-primary  mx-2 tootiped-component">
+        <Link
+            to={`/chart/${this.state.chart.id}`}
+            className="btn text-primary mx-2 tootiped-component">
             <i className="material-icons">remove_red_eye</i>
             <span className="tooltiptext">Test Data Source</span>
         </Link>
