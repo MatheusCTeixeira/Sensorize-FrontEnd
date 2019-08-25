@@ -1,8 +1,11 @@
 import React from "react";
 import { Button, Modal, Form } from "react-bootstrap";
 
+import { ChartController } from "./ChartController";
+
 import { IChart } from "../Types/ChartType";
 import { IPrompt } from "../Types/PromptType";
+import { IDataSource } from "../Types/DataSourceType";
 
 /* ────────────────────────────────────────────────────────────────────────── */
 
@@ -18,22 +21,13 @@ interface IState extends IProps {
 
 // Esta classe é responsável por adicionar Charts.
 export default class ChartPrompt
-    extends React.Component<IProps, IState>
-    implements IPrompt<IChart> {
+    extends React.Component<IProps, IState> {
     state      : IState                            ;
-    label      : React.RefObject<HTMLInputElement> ;
-    chartType  : React.RefObject<HTMLSelectElement>;
-    dataSources: React.RefObject<HTMLSelectElement>;
-    bufferSize : React.RefObject<HTMLInputElement> ;
+    controller: ChartController = new ChartController();
 
     constructor(props: IProps) {
         super(props);
         this.state = { ...props, show: false };
-
-        this.label       = React.createRef();
-        this.chartType   = React.createRef();
-        this.dataSources = React.createRef();
-        this.bufferSize  = React.createRef();
     }
 
     // Exibe o menu.
@@ -48,46 +42,25 @@ export default class ChartPrompt
 
 /* ────────────────────────────────────────────────────────────────────────── */
 
-    // Testa se os campos são Null.
-    isInputFieldsNull: () =>  boolean = () => {
-        return (
-            this.label.current       == null ||
-            this.chartType.current   == null ||
-            this.dataSources.current == null ||
-            this.bufferSize.current  == null );
-    }
-
-    // Extrai o texto dos campos.
-    extractInputFields: () => IChart = () => {
-        const label       = this.label.current.value;
-        const chartType   = this.chartType.current.value;
-        const bufferSize  = parseInt(this.bufferSize.current.value);
-        const dataSources =
-            Array.from(this.dataSources.current.selectedOptions).map(
-                htmlOptionElement => htmlOptionElement.value
-            );
-
-        const chart: IChart = {
-            label      : label,
-            chartType  : chartType,
-            dataSources: dataSources,
-            buffer     : bufferSize,
-            id         : Math.random(),
-        }
-
-        return chart;
-    }
 
     // Adiciona os dados do Chart no Banco de Dados, Atualiza o ID do Chart e
     // Adiciona na lista de charts.
     add: () => void = () => {
-        if (this.isInputFieldsNull())
+        if (this.controller.checkForNullInputs())
             throw Error("Invalid Input Fields");
 
-        const chart = this.extractInputFields();
+        const chart = this.controller.readInput();
+        // TODO Buscar do servidor.
+        chart.id = Math.random();
 
         this.props.addCallback(chart);
         this.hideModal();
+    }
+
+    listDataSources: () => React.ReactNode[] = () => {
+        return this.controller.fetchAllDataSources().map(
+            (_, i) => <option key={i} value={_.id}>{_.label}</option>
+        )
     }
 
 /* ────────────────────────────────────────────────────────────────────────── */
@@ -101,7 +74,7 @@ export default class ChartPrompt
                 className="form-control"
                 type="text"
                 placeholder="Chart Label"
-                ref={this.label}
+                ref={this.controller.label}
                 />
             <Form.Text className="text-muted">
             Chart Label. Eg. Chart #1
@@ -110,7 +83,7 @@ export default class ChartPrompt
             <Form.Label>Chart Type</Form.Label>
             <select
                 className="form-control"
-                ref={this.chartType}>
+                ref={this.controller.chartType}>
                     <option value = "Bar Chart"    >Bar Chart   </option>
                     <option value = "Line Chart"   >Line Chart  </option>
                     <option value = "Pie Chart"    >Pie Chart   </option>
@@ -123,11 +96,8 @@ export default class ChartPrompt
             <Form.Label>Data Sources</Form.Label>
             <select multiple
                 className="form-control"
-                ref={this.dataSources}>
-                <option value="Sensor #1">Sensor #1</option>
-                <option value="Sensor #2">Sensor #2</option>
-                <option value="Sensor #3">Sensor #3</option>
-                <option value="Sensor #4">Sensor #4</option>
+                ref={this.controller.dataSources}>
+                { this.listDataSources() }
             </select>
             <Form.Text className="text-muted">
             Data Source to be ploted. Eg. Sensor #1, ...
@@ -138,7 +108,7 @@ export default class ChartPrompt
                 type="number"
                 placeholder="Buffer Size"
                 className="form-control"
-                ref={this.bufferSize}/>
+                ref={this.controller.bufferSize}/>
             <Form.Text className="text-muted">
             The buffer size. Eg. 150 samples.
             </Form.Text>

@@ -1,8 +1,10 @@
 import React from "react";
 import DataSourceCard from "./DataSourceCard";
-import DataSourcePrompt from "./DataSourcePrompt";
+import DataSourcePrompt from "./DataSourceAddView";
 
 import { IDataSource } from "../Types/DataSourceType";
+
+import * as mock from "../mock";
 
 // A interface IProps.
 interface IProps {
@@ -24,6 +26,16 @@ export default class DataSource extends React.Component<IProps, IState> {
         this.state = {
             dataSources: new Array<IDataSource>()
         };
+    }
+
+    componentDidMount = () => {
+        this.setState( {
+            dataSources: mock.dataSources,
+        });
+    }
+
+    componentWillUnmount = () => {
+        mock.dataSources.push(...this.state.dataSources);
     }
 
     // Adiciona uma nova Data Source.

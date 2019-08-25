@@ -1,8 +1,9 @@
 import React      from 'react'                  ;
-import Chart      from "./Chart/Chart"          ;
-import DataSource from "./DataSource/DataSource";
+import Chart      from "./Chart/ChartView"          ;
+import DataSource from "./DataSource/DataSourceView";
 
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+import DisplaySensor from './Chart/DisplaySensor';
 
 /* ────────────────────────────────────────────────────────────────────────── */
 
@@ -59,7 +60,7 @@ export default class App extends React.Component<IProps, IState> {
                 </div>
             </Link>
         </div>
-        <Router>
+        <Router basename="/">
             <div   className = "viewport">
                 <Route path  = "/datasource" component = {DataSource} />
                 <Route path  = "/chart"      component = {Chart} />

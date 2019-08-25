@@ -2,6 +2,7 @@ import React from "react";
 
 import { IDataSource } from "../Types/DataSourceType";
 import { Button, Form, Modal } from "react-bootstrap";
+import { DataSourceController } from "./DataSourceController";
 
 // A interface IProps.
 interface IProps {
@@ -22,22 +23,11 @@ export default class DataSourceEdit
     extends React.Component<IProps, IState> {
 
     state: IState;
-
-    ipAddress      : React.RefObject<HTMLInputElement>;
-    port           : React.RefObject<HTMLInputElement>;
-    label          : React.RefObject<HTMLInputElement>;
-    dataType       : React.RefObject<HTMLInputElement>;
-    sampleFrequency: React.RefObject<HTMLInputElement>;
+    controller: DataSourceController = new DataSourceController();
 
     constructor(props: IProps) {
         super(props);
         this.state = { ...props, modal: false, };
-
-        this.ipAddress       = React.createRef();
-        this.port            = React.createRef();
-        this.label           = React.createRef();
-        this.dataType        = React.createRef();
-        this.sampleFrequency = React.createRef();
     }
 
     showModal = () => {
@@ -50,41 +40,9 @@ export default class DataSourceEdit
 
 /* ────────────────────────────────────────────────────────────────────────── */
 
-    isInputFieldsNull: () => boolean = () => {
-        return !(
-            this.ipAddress.current       != null &&
-            this.port.current            != null &&
-            this.label.current           != null &&
-            this.dataType.current        != null &&
-            this.sampleFrequency.current != null
-        );
-    }
-
-    extractInputFields: () => IDataSource = () => {
-        if (this.isInputFieldsNull())
-            throw Error("Invalid Input Fields");
-
-        const ipAddress       = this.ipAddress.current.value      ;
-        const port            = this.port.current.value           ;
-        const label           = this.label.current.value          ;
-        const dataType        = this.dataType.current.value       ;
-        const sampleFrequency = this.sampleFrequency.current.value;
-
-        // TODO preencher o ID após adicionar no servidor.
-        const dataSource: IDataSource = {
-            ...this.props.dataSource,
-            ipAddress      : ipAddress,
-            port           : parseInt(port),
-            label          : label,
-            dataType       : dataType,
-            sampleFrequency: parseInt(sampleFrequency),
-        };
-
-        return dataSource;
-    }
-
     edit = () => {
-        const editDtSrc = this.extractInputFields();
+        const editDtSrc = this.controller.readInput();
+        editDtSrc.id = this.state.dataSource.id;
 
         this.props.editCallback(editDtSrc);
 
@@ -104,7 +62,7 @@ export default class DataSourceEdit
                 className="form-control"
                 placeholder="Data Source IP"
                 defaultValue={this.state.dataSource.ipAddress}
-                ref={this.ipAddress} />
+                ref={this.controller.ipAddress} />
             <Form.Text className="text-muted">
             Data Source IP Address. Eg. 127.0.0.1
             </Form.Text>
@@ -115,7 +73,7 @@ export default class DataSourceEdit
                 className="form-control"
                 placeholder="Port Number"
                 defaultValue={this.state.dataSource.port.toString()}
-                ref={this.port} />
+                ref={this.controller.port} />
             <Form.Text className="text-muted">
             Data Source Port Number. Eg. 3000
             </Form.Text>
@@ -126,7 +84,7 @@ export default class DataSourceEdit
                 className="form-control"
                 placeholder="Data Source Label"
                 defaultValue={this.state.dataSource.label}
-                ref={this.label} />
+                ref={this.controller.label} />
             <Form.Text className="text-muted">
             Data Source Label. Eg. Sensor #1
             </Form.Text>
@@ -137,7 +95,7 @@ export default class DataSourceEdit
                 className="form-control"
                 placeholder="Data Type"
                 defaultValue={this.state.dataSource.dataType}
-                ref={this.dataType} />
+                ref={this.controller.dataType} />
             <Form.Text className="text-muted">
             Continuous or Discrete.
             </Form.Text>
@@ -148,7 +106,7 @@ export default class DataSourceEdit
                 className="form-control"
                 placeholder="Sample Frequency"
                 defaultValue={this.state.dataSource.sampleFrequency.toString()}
-                ref={this.sampleFrequency}/>
+                ref={this.controller.sampleFrequency}/>
             <Form.Text className="text-muted">
             Sample Frequency ≤ 4Hz.
             </Form.Text>

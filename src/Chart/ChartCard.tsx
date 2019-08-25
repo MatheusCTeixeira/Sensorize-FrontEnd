@@ -1,6 +1,6 @@
 import React       from "react"        ;
-import ChartEdit   from "./ChartEdit"  ;
-import ChartDelete from "./ChartDelete";
+import ChartEdit   from "./ChartEditView"  ;
+import ChartDelete from "./ChartDeleteView";
 
 import { IChart } from "../Types/ChartType";
 
@@ -44,7 +44,7 @@ export default class ChartCard extends React.Component<IProps, IState> {
                     </tr>
                     <tr>
                         <td>Data Sources</td>
-                        <td>{this.state.chart.dataSources.reduce(
+                        <td>{this.state.chart.dataSources.map(_ => _.label).reduce(
                             (_, dataSource) => _ + ", " + dataSource)}</td>
                     </tr>
                     <tr>

@@ -3,7 +3,7 @@ import React from "react";
 import { IChart } from "../Types/ChartType";
 import IGraph     from "./GraphEngine";
 
-import { Chart, ChartData } from "chart.js";
+import { Chart, ChartData, ChartOptions } from "chart.js";
 
 import { Colors } from "./ColorList";
 
@@ -34,21 +34,22 @@ export default class BarChart
     }
 
     setupData = () => {
+        if (this.props.chart == null) return;
+
+        let nOfDtSrc = 0;
         return {
             labels: [],
-            datasets: [{
-                label          : 'Sensor #1',
-                backgroundColor: Colors[0].light().toString(),
-                borderColor    : Colors[0].dark().toString(),
-                borderWidth    : 1,
-                data           : [],
-            },{
-                label          : 'Sensor #2',
-                backgroundColor: Colors[4].light().toString(),
-                borderColor    : Colors[4].light().toString(),
-                borderWidth    : 1,
-                data           : [],
-            },]
+            datasets: [
+                ...this.props.chart.dataSources.map(
+                    dataSource => ({
+                        label: dataSource.label,
+                        backgroundColor: Colors[nOfDtSrc].light().toString(),
+                        borderColor    : Colors[nOfDtSrc++].dark().toString(),
+                        borderWidth    : 1,
+                        data           : [],
+                    })
+                ),
+            ]
         } as ChartData;
     }
 
@@ -62,7 +63,7 @@ export default class BarChart
                 }]
             },
             hover: {
-                animationDuration: 1000,
+                animationDuration: 300,
             },
             legend: {
                 display: true,
@@ -70,9 +71,10 @@ export default class BarChart
             },
             layout: {
                 padding: 50,
-            }
+            },
 
-        } as object;
+
+        } as ChartOptions;
     }
 
     componentDidMount = () => {
@@ -102,12 +104,12 @@ export default class BarChart
     }
 
     updateGraph = () => {
-        if (this.viewChart.data.labels.length > 10) {
+        if (this.viewChart.data.labels.length > this.props.chart.buffer) {
             this.viewChart.data.labels.shift();
         }
 
         this.viewChart.data.datasets.forEach((dataset: any) => {
-            if (dataset.data.length > 10)
+            if (dataset.data.length > this.props.chart.buffer)
                 dataset.data.shift();
             dataset.data.push(Math.random() * 200)
         });

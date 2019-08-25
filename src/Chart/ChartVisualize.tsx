@@ -31,7 +31,7 @@ export default class ChartVisualize extends React.Component<IProps, IState> {
             to={`/chart/${this.state.chart.id}`}
             className="btn text-primary mx-2 tootiped-component">
             <i className="material-icons">remove_red_eye</i>
-            <span className="tooltiptext">Test Data Source</span>
+            <span className="tooltiptext">Visualize Chart</span>
         </Link>
         </>);
     }

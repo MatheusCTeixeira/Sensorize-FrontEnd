@@ -1,11 +1,13 @@
 import React         from "react"           ;
 import ChartCard     from "./ChartCard"     ;
-import ChartPrompt   from "./ChartPrompt"   ;
+import ChartPrompt   from "./ChartAddView"   ;
 import DisplaySensor from "./DisplaySensor";
 
 import { IChart } from "../Types/ChartType";
 
 import { BrowserRouter as Router, Route } from "react-router-dom";
+
+import * as mock from "../mock";
 
 /* ────────────────────────────────────────────────────────────────────────── */
 
@@ -30,6 +32,16 @@ export default class Chart extends React.Component<IProps, IState> {
     constructor(props: any) {
         super(props);
         this.state = { charts: []};
+    }
+
+    componentDidMount = () => {
+        this.setState({
+            charts: mock.charts,
+        })
+    }
+
+    componentWillUnmount = () => {
+        mock.charts.push(...this.state.charts);
     }
 
 /* ────────────────────────────────────────────────────────────────────────── */
@@ -99,7 +111,8 @@ export default class Chart extends React.Component<IProps, IState> {
                         <ChartPrompt {...props} addCallback={this.addChart}/>}/>
 
                 <Route path="/chart" exact component={this.makeList}/>
-                <Route exact path="/chart/:id" component={DisplaySensor}/>
+
+                <Route path="/chart/:id" component={DisplaySensor}/>
             </div>
         </Router>);
     }

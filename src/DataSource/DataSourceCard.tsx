@@ -1,6 +1,6 @@
 import React, { Component } from "react"             ;
-import DataSourceDelete     from "./DataSourceDelete";
-import DataSourceEdit       from "./DataSourceEdit"  ;
+import DataSourceDelete     from "./DataSourceDeleteView";
+import DataSourceEdit       from "./DataSourceEditView"  ;
 import DataSourceTest       from "./DataSourceTest"  ;
 
 import { IDataSource } from "../Types/DataSourceType";
