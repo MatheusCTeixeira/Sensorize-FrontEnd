@@ -4,6 +4,8 @@ import { IDataSource } from "../Types/DataSourceType";
 import { Button, Form, Modal } from "react-bootstrap";
 import { DataSourceController } from "./DataSourceController";
 
+/* ────────────────────────────────────────────────────────────────────────── */
+
 // A interface IProps.
 interface IProps {
     dataSource: IDataSource;

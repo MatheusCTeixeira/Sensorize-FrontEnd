@@ -6,6 +6,8 @@ import { IDataSource } from "../Types/DataSourceType";
 
 import { DataSourceController } from "./DataSourceController";
 
+/* ────────────────────────────────────────────────────────────────────────── */
+
 // A interface IProps.
 interface IProps {
     addCallback: (dataSource: IDataSource) => any;

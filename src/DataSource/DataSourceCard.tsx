@@ -1,9 +1,13 @@
-import React, { Component } from "react"             ;
+import React, { Component } from "react"                 ;
+
 import DataSourceDelete     from "./DataSourceDeleteView";
 import DataSourceEdit       from "./DataSourceEditView"  ;
-import DataSourceTest       from "./DataSourceTest"  ;
+import DataSourceTest       from "./DataSourceTest"      ;
 
-import { IDataSource } from "../Types/DataSourceType";
+import { IDataSource } from "../Types/DataSourceType"    ;
+
+/* ────────────────────────────────────────────────────────────────────────── */
+
 
 // A interface IProps.
 interface IProps {

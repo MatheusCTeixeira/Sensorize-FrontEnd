@@ -2,6 +2,8 @@ import { IChart } from "../Types/ChartType";
 
 import * as mock from "../mock";
 
+/* ────────────────────────────────────────────────────────────────────────── */
+
 function fetchChart(id: number):IChart {
     return mock.charts.filter(
         chart => chart.id === id

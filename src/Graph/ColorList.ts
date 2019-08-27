@@ -1,5 +1,4 @@
 
-
 class Color {
     constructor(
         public red  : number,
@@ -23,6 +22,8 @@ const Colors: Color[] = [
     new Color(  0,   0, 255, .5), // Blue
     new Color(128,   0, 128, .5), // Purple
     new Color(255, 255,   0, .5), // Yellow
+    new Color(255, 128,   0, .5), // Orange
+    new Color(  0, 255, 255, .5), // Turquoise
     new Color(  0,   0,   0, .5), // Black
 ];
 

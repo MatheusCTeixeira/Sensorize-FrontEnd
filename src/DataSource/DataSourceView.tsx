@@ -1,10 +1,12 @@
-import React from "react";
-import DataSourceCard from "./DataSourceCard";
-import DataSourcePrompt from "./DataSourceAddView";
+import React            from "react"                  ;
+import DataSourceCard   from "./DataSourceCard"       ;
+import DataSourcePrompt from "./DataSourceAddView"    ;
 
-import { IDataSource } from "../Types/DataSourceType";
+import { IDataSource }  from "../Types/DataSourceType";
 
-import * as mock from "../mock";
+import * as mock        from "../mock"                ;
+
+/* ────────────────────────────────────────────────────────────────────────── */
 
 // A interface IProps.
 interface IProps {

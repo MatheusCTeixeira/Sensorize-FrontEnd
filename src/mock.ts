@@ -44,7 +44,7 @@ let charts: IChart[] = [
     {
         id: 1,
         buffer: 30,
-        chartType: "Pie Chart",
+        chartType: "Line Chart",
         label: "Chart #1",
         dataSources: [
             dataSources[randomInt(0, dataSources.length)],
@@ -54,30 +54,32 @@ let charts: IChart[] = [
     } as IChart,
     {
         id: 2,
-        buffer: 150,
-        chartType: "Pie Chart",
+        buffer: 10,
+        chartType: "Bar Chart",
         label: "Chart #2",
         dataSources: [
+            dataSources[randomInt(0, dataSources.length)],
             dataSources[randomInt(0, dataSources.length)],
             dataSources[randomInt(0, dataSources.length)],
         ]
     } as IChart,
     {
         id: 3,
-        buffer: 450,
-        chartType: "Pie Chart",
+        buffer: 50,
+        chartType: "Scatter Plot",
         label: "Chart #3",
         dataSources: [
+            dataSources[randomInt(0, dataSources.length)],
+            dataSources[randomInt(0, dataSources.length)],
             dataSources[randomInt(0, dataSources.length)],
         ]
     } as IChart,
     {
         id: 4,
-        buffer: 600,
+        buffer: 10,
         chartType: "Pie Chart",
         label: "Chart #4",
         dataSources: [
-            dataSources[randomInt(0, dataSources.length)],
             dataSources[randomInt(0, dataSources.length)],
             dataSources[randomInt(0, dataSources.length)],
             dataSources[randomInt(0, dataSources.length)],
