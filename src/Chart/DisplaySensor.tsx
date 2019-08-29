@@ -6,7 +6,6 @@ import { IChart }     from "../Types/ChartType";
 import { RouteComponentProps} from "react-router-dom";
 
 import Graph from "../Graph/Chart";
-import { IDataSource } from "../Types/DataSourceType";
 import { IChartInputType } from "../Graph/ChartInputType";
 
 /* ────────────────────────────────────────────────────────────────────────── */
@@ -45,14 +44,22 @@ export default class DisplaySensor extends React.Component<IProps, IState> {
     }
 
 /* ────────────────────────────────────────────────────────────────────────── */
+    fetchBar = () => {
+        const Y = Math.random()*50;
+        const deviation = () => Math.random() * 10;
 
-    /**
-     * Esta função é responsável por obter os dados da fonte de dados. Cada
-     * fonte de dados possui uma frequência de requisição específica e,
-     * portanto, a frequência de requisições enviadas a uma fonte de dados espe-
-     * cífica deve estar de acordo com essa frequência.
-     */
-    fetchData = () => {
+        const Cat = ["A", "B", "C", "D", "E", "F", "G"];
+
+        const data: IChartInputType = {
+            dataSource: this.state.chart.dataSources[Math.floor(Math.random()*3)],
+            data: [
+                { x: Cat[Math.floor(Math.random()*Cat.length)], y: Y + deviation() },
+            ]
+        };
+        this.notifyAll(data);
+    }
+
+    fetchScatter = () => {
         const Y = Math.random()*50;
         const deviation = () => Math.random() * 10;
         const dateDeviation = () => {
@@ -61,7 +68,23 @@ export default class DisplaySensor extends React.Component<IProps, IState> {
             return date;
         };
 
-        const Cat = [1, 2, 3, 4];
+        const data: IChartInputType = {
+            dataSource: this.state.chart.dataSources[Math.floor(Math.random()*3)],
+            data: [
+                { x: dateDeviation(), y: Y + deviation() },
+                { x: dateDeviation(), y: Y + deviation() },
+                { x: dateDeviation(), y: Y + deviation() },
+                { x: dateDeviation(), y: Y + deviation() },
+                { x: dateDeviation(), y: Y + deviation() },
+                { x: dateDeviation(), y: Y + deviation() },
+            ]
+        };
+        this.notifyAll(data);
+    }
+
+    fetchLine = () => {
+        const Y = Math.random()*50;
+        const deviation = () => Math.random() * 10;
 
         const data: IChartInputType = {
             dataSource: this.state.chart.dataSources[Math.floor(Math.random()*3)],
@@ -70,6 +93,29 @@ export default class DisplaySensor extends React.Component<IProps, IState> {
             ]
         };
         this.notifyAll(data);
+    }
+
+    fetchPie = () => {
+        const Y = Math.random()*50;
+        const deviation = () => Math.random() * 10;
+
+        const data: IChartInputType = {
+            dataSource: this.state.chart.dataSources[Math.floor(Math.random()*3)],
+            data: [
+                { x: new Date(), y: Y + deviation() },
+            ]
+        };
+        this.notifyAll(data);
+    }
+
+    /**
+     * Esta função é responsável por obter os dados da fonte de dados. Cada
+     * fonte de dados possui uma frequência de requisição específica e,
+     * portanto, a frequência de requisições enviadas a uma fonte de dados espe-
+     * cífica deve estar de acordo com essa frequência.
+     */
+    fetchData = () => {
+        this.fetchPie();
     }
 
     /**
@@ -90,7 +136,7 @@ export default class DisplaySensor extends React.Component<IProps, IState> {
 /* ────────────────────────────────────────────────────────────────────────── */
 
     render() {
-        { if (this.state.chart == null) return null; }
+        if (this.state.chart == null) return null;
         return <div style={{"width": "100%", "height": 400}}>
             <Graph subscripton={this.subscribe} chart={this.state.chart} width={"100%"} height={400}/>
         </div>;

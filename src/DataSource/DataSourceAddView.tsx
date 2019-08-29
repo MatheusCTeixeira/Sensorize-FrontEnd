@@ -1,7 +1,6 @@
 import React from "react";
 import { Button, Modal, Form, FormText, FormLabel } from "react-bootstrap"
 
-import { IPrompt } from "../Types/PromptType";
 import { IDataSource } from "../Types/DataSourceType";
 
 import { DataSourceController } from "./DataSourceController";

@@ -4,8 +4,6 @@ import { Button, Modal, Form } from "react-bootstrap";
 import { ChartController } from "./ChartController";
 
 import { IChart } from "../Types/ChartType";
-import { IPrompt } from "../Types/PromptType";
-import { IDataSource } from "../Types/DataSourceType";
 
 /* ────────────────────────────────────────────────────────────────────────── */
 

@@ -2,7 +2,7 @@
 import {IDataSource} from "../Types/DataSourceType";
 
 interface IData {
-    x: Date|number;
+    x: Date | number | string;
     y: number;
 }
 

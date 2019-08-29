@@ -3,7 +3,6 @@ import Chart      from "./Chart/ChartView"          ;
 import DataSource from "./DataSource/DataSourceView";
 
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
-import DisplaySensor from './Chart/DisplaySensor';
 
 /* ────────────────────────────────────────────────────────────────────────── */
 

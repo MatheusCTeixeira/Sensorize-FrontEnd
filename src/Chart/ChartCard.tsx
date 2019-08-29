@@ -34,7 +34,7 @@ export default class ChartCard extends React.Component<IProps, IState> {
         <div className="card m-4 chart-card">
         <h5 className="card-header">{this.state.chart.label}</h5>
         <div className="card-body">
-            <h5 className="card-title">Data Source features:</h5>
+            <h5 className="card-title">Chart features:</h5>
             <div className="card-text w-100">
                 <table className="chart-features">
                     <tbody>

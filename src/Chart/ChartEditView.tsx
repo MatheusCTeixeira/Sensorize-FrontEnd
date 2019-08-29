@@ -3,7 +3,6 @@ import { Button, Modal, FormLabel, FormText } from "react-bootstrap";
 
 import { IChart } from "../Types/ChartType";
 import { Form } from "react-bootstrap";
-import { IDataSource } from "../Types/DataSourceType";
 
 import { ChartController } from "./ChartController";
 
