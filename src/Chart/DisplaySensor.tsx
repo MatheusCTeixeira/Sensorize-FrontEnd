@@ -6,6 +6,8 @@ import { IChart }     from "../Types/ChartType";
 import { RouteComponentProps} from "react-router-dom";
 
 import Graph from "../Graph/Chart";
+import { IDataSource } from "../Types/DataSourceType";
+import { IChartInputType } from "../Graph/ChartInputType";
 
 /* ────────────────────────────────────────────────────────────────────────── */
 
@@ -26,7 +28,7 @@ export default class DisplaySensor extends React.Component<IProps, IState> {
      * Esta abordagem foi utilizada porque elimina a necessidade de realizar
      * mais requisições à fonte de dados.
      */
-    subscribers: Array<(data: number[]) => any>;
+    subscribers: Array<(data: IChartInputType) => any>;
 
     constructor(props: IProps) {
         super(props);
@@ -39,7 +41,7 @@ export default class DisplaySensor extends React.Component<IProps, IState> {
             chart: fetchChart(parseInt(this.props.match.params.id)),
         });
 
-        setInterval(()=>this.fetchData(), 1000);
+        setInterval(()=>this.fetchData(), 700);
     }
 
 /* ────────────────────────────────────────────────────────────────────────── */
@@ -51,7 +53,22 @@ export default class DisplaySensor extends React.Component<IProps, IState> {
      * cífica deve estar de acordo com essa frequência.
      */
     fetchData = () => {
-        const data = [10, 20, 30, 40, 60].map(v => Math.random() * v);
+        const Y = Math.random()*50;
+        const deviation = () => Math.random() * 10;
+        const dateDeviation = () => {
+            const date = new Date();
+            date.setMilliseconds(date.getMilliseconds() + deviation()* 10);
+            return date;
+        };
+
+        const Cat = [1, 2, 3, 4];
+
+        const data: IChartInputType = {
+            dataSource: this.state.chart.dataSources[Math.floor(Math.random()*3)],
+            data: [
+                { x: new Date(), y: Y + deviation() },
+            ]
+        };
         this.notifyAll(data);
     }
 
@@ -59,14 +76,14 @@ export default class DisplaySensor extends React.Component<IProps, IState> {
      * Esta função adiciona uma fonte de dados na lista de componentes que
      * desejam receber os dados provinientes das fontes de dados.
     */
-    subscribe = (callback: (data: number[]) => any) => {
+    subscribe = (callback: (data: IChartInputType) => any) => {
         this.subscribers.push(callback);
     }
 
     /**
      * Esta função passa o parâmetro para todos os subscribers.
      */
-    notifyAll(data: any) {
+    notifyAll(data: IChartInputType) {
         this.subscribers.forEach(subscriber => subscriber(data));
     }
 

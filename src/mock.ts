@@ -43,7 +43,7 @@ let dataSources: IDataSource[] = [
 let charts: IChart[] = [
     {
         id: 1,
-        buffer: 30,
+        buffer: 70,
         chartType: "Line Chart",
         label: "Chart #1",
         dataSources: [

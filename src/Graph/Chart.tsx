@@ -5,6 +5,9 @@ import { IChart } from "../Types/ChartType";
 import { Chart, ChartData, ChartOptions, ChartDataSets } from "chart.js";
 
 import { Colors } from "./ColorList";
+import { IDataSource } from "../Types/DataSourceType";
+
+import { IChartInputType } from "./ChartInputType";
 
 /* ────────────────────────────────────────────────────────────────────────── */
 
@@ -12,7 +15,7 @@ interface IProps {
     chart : IChart;
     width : number | string;
     height: number | string;
-    subscripton: (callback: (data: number[]) => any) => any;
+    subscripton: (callback: (data: IChartInputType) => any) => any;
 }
 
 interface IState extends IProps {
@@ -91,6 +94,21 @@ export default class Graph
                 }],
                 xAxes: [{
                     display: showAxis,
+                    type: "time",
+                    time: {
+                        unit: "millisecond",
+                    },
+                    ticks: {
+                        callback: function(value, index, values) {
+                            const nValues = values.length;
+                            const tenPerc = Math.floor(nValues / 10);
+
+                            if (index % tenPerc === 0 || nValues < 10)
+                                return value;
+
+                            return null;
+                        }
+                    }
                 }],
             },
             hover: {
@@ -148,15 +166,109 @@ export default class Graph
         this.props.subscripton(this.updateGraph);
     }
 
-    // Atualiza o gráfico quando algum dado chegar.
-    // TODO identificar os formatos dos dados.
-    updateGraph = (data: number[]) => {
-        if (this.mappedType() === "pie")
-            this.viewChart.data.labels = data.map(_=>_.toString());
-        else
-            this.viewChart.data.labels = data.map(_=>_.toString());
+/**
+ * Pie:
+ *  [A, B, C] -> onde cada uma é o valor de um data source.
+ *
+ * Scatter:
+ *  [{x:x_0, y: y_0}, {x:x_1, y: y_1}] -> o array inteiro pertencente a
+ *      uma única data source.
+ *
+ * Line Chart, Bar Chart:
+ *  [a, b, c, d, ...] -> o array inteiro pertence a uma única data source.
+ *
+ * Commom Patern:
+ * {
+ *  dataSource: ...,
+ *  data: [
+ *          {x: ..., y: ...},
+ *          {x: ..., y: ...},
+ *                ...
+ *          {x: ..., y: ...},
+ *          {x: ..., y: ...},
+ *      ]
+ * }
+ *
+ */
 
-        this.viewChart.data.datasets.forEach(dataset => dataset.data = data);
+    pieDataParse(data: IChartInputType) {
+        const viewChartData = this.viewChart.data;
+
+         // Labels para os gráficos do tipo Pie. Eixo X.
+        if (viewChartData.labels.findIndex(
+            lbl=>lbl===data.dataSource.label) < 0) {
+            const dataSourceLabel = data.dataSource.label;
+            viewChartData.labels.push(dataSourceLabel);
+        }
+
+        // Valores para os gráficos do tipo Pie. Eixo Y.
+        this.viewChart.data.datasets.forEach((dataset, i) => {
+            // Procura o id da data source baseado na do label.
+            const idx = viewChartData.labels.findIndex(
+                lbl => lbl === data.dataSource.label);
+
+                // Apenas o último dado é usado, pois deve ser o mais atual.
+                const length = data.data.length;
+                dataset.data[idx] = data.data[length - 1].y;
+            }
+            );
+    }
+
+    scatterDataParse(data: IChartInputType) {
+        this.lineDataParse(data);
+    }
+
+    lineDataParse(data: IChartInputType) {
+        console.log(data);
+        const bufferSize = this.props.chart.buffer;
+        const viewChartData = this.viewChart.data;
+
+        const P = data.data.map(point => {
+            return {
+                x: point.x,
+                y: point.y,
+            } as Chart.ChartPoint;
+        })
+
+        // Valores para os demais gráficos. Eixo Y.
+        viewChartData.datasets.forEach(dataset => {
+            if (dataset.label === data.dataSource.label) {
+                dataset.data = (
+                    [...dataset.data as Chart.ChartPoint[], ...P].slice(
+                        -bufferSize)
+                );
+            }
+        });
+    }
+
+    // TODO especializar para apresentar dados por categoria, ao ínvés de uma
+    // série temporal.
+    barDataParse(data: IChartInputType) {
+        this.lineDataParse(data);
+    }
+
+    // Atualiza o gráfico quando algum dado chegar.
+    updateGraph = (data: IChartInputType) => {
+        const bufferSize = this.props.chart.buffer;
+        const viewChartData = this.viewChart.data;
+
+        switch (this.mappedType()) {
+        case "pie":
+            this.pieDataParse(data);
+            break;
+        case "line":
+            this.lineDataParse(data);
+            break;
+        case "bar":
+            this.barDataParse(data);
+            break;
+        case "scatter":
+            this.scatterDataParse(data);
+            break;
+        default:
+            throw "Chart Type not supported.";
+        }
+
         this.viewChart.update();
     }
 
