@@ -8,6 +8,7 @@ import { Colors } from "./ColorList";
 
 import { IChartInputType } from "./ChartInputType";
 
+import { Statistic } from "./Statistic";
 /* ────────────────────────────────────────────────────────────────────────── */
 
 interface IProps {
@@ -314,13 +315,17 @@ export default class Graph
 
     render = () => {
         return (
-        <canvas
-            ref={this.canvas}
-            style={{
-                "width" : this.props.width,
-                "height": this.props.height,
-            }} />
+        <div className="container">
+            <h1 className="text-primary">View</h1>
+            <canvas
+                ref={this.canvas}
+                style={{
+                    "width" : this.props.width,
+                    "height": this.props.height,
+                }} />
 
+            <Statistic />
+        </div>
         );
     }
 }
