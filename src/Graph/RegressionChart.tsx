@@ -1,7 +1,8 @@
 import React from "react";
+import * as timeseries from "timeseries-analysis";
 
 import { Chart, ChartData, ChartPoint } from "chart.js";
-import { IChartInputType } from "./ChartInputType";
+import { IChartInputType, IData } from "./ChartInputType";
 
 interface IProps {
     width: number|string;
@@ -45,6 +46,9 @@ export class RegressionChart extends React.Component<IProps, IState> {
             },
             type: "line",
             options: {
+                legend: {
+                    position: "bottom"
+                },
                 scales: {
                     xAxes: [{
                         display: true,
@@ -69,6 +73,10 @@ export class RegressionChart extends React.Component<IProps, IState> {
                     padding: {
                         bottom: 120
                     },
+                },
+                title: {
+                    display: true,
+                    text: (this.props.data.dataSource.label),
                 }
             }
         });
@@ -76,15 +84,41 @@ export class RegressionChart extends React.Component<IProps, IState> {
         setInterval(()=>this.updateChart(), 5000);
     }
 
+    parseToForecast = (data: IData[]) => {
+        return data.map(dt => [dt.x, dt.y]);
+    }
+
+    parseFromForecast = (data: [Date, number][]) => {
+        return data.map(dt => ({x: dt[0], y: dt[1]} as IData));
+    }
+
+    forecast = (data: IData[]) => {
+        return new Promise<[Date, number][]>((resolve, reject) => {
+            const parsedData = this.parseToForecast(data);
+            const t = new timeseries.main(parsedData);
+
+            t.smoother({period:10}).save('smoothed');
+            const bestSettings = t.regression_forecast_optimize();
+
+            resolve(t.sliding_regression_forecast({
+                sample: data.length,
+                degree: 10,
+                method: "ARLeastSquare",
+            }).output());
+        });
+    }
+
     updateChart = () => {
         this.chartView.data.datasets[0].data =
             this.props.data.data.map(dt => dt as ChartPoint);
 
-        this.chartView.data.datasets[1].data =
-            [...this.props.data.data.map(dt => {
-                    dt = {x: dt.x, y: Math.random()*50}
-                    return dt as ChartPoint;
-                })];
+        if (this.props.data.data.length > 5) {
+            this.forecast(this.props.data.data).then(data => {
+                const parsedData = this.parseFromForecast(data);
+                this.chartView.data.datasets[1].data = parsedData;
+                this.chartView.update();
+            });
+        }
 
         this.chartView.update();
     }

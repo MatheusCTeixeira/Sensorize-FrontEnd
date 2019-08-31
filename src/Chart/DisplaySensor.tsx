@@ -83,12 +83,13 @@ export default class DisplaySensor extends React.Component<IProps, IState> {
         this.notifyAll(data);
     }
 
+    t: number = 0;
     fetchLine = () => {
-        const Y = Math.random()*50;
-        const deviation = () => Math.random() * 10;
+        const Y = Math.sin(this.t++/50)*50;
+        const deviation = () => Math.random() * 5;
 
         const data: IChartInputType = {
-            dataSource: this.state.chart.dataSources[Math.floor(Math.random()*3)],
+            dataSource: this.state.chart.dataSources[this.t % 2],
             data: [
                 { x: new Date(), y: Y + deviation() },
             ]
@@ -116,7 +117,7 @@ export default class DisplaySensor extends React.Component<IProps, IState> {
      * cífica deve estar de acordo com essa frequência.
      */
     fetchData = () => {
-        this.fetchPie();
+        this.fetchLine();
     }
 
     /**

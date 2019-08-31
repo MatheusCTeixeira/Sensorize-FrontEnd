@@ -1,7 +1,7 @@
 
 import {IDataSource} from "../Types/DataSourceType";
 
-interface IData {
+export interface IData {
     x: Date | number | string;
     y: number;
 }

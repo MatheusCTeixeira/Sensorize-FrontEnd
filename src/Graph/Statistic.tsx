@@ -44,7 +44,7 @@ export class Statistic extends React.Component<IProps, IState> {
     }
 
     render = () => {
-        if (this.state.dataSourcesData.length < 1) return null;
+        if (this.state.dataSourcesData.length < 2) return null;
         return (
         <div className="container mt-5">
             <h3 className="text-primary">Statistics</h3>
@@ -53,13 +53,13 @@ export class Statistic extends React.Component<IProps, IState> {
                     <RegressionChart
                         data={this.state.dataSourcesData[0]}
                         width={"100%"}
-                        height={"400px"}/>
+                        height={"600px"}/>
                 </div>
                 <div className="col-6">
                     <RegressionChart
                         data={this.state.dataSourcesData[1]}
                         width={"100%"}
-                        height={"400px"}/>
+                        height={"600px"}/>
                 </div>
             </div>
         </div>)
