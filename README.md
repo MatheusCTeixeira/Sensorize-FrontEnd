@@ -1,6 +1,7 @@
+
 # Sensorize: Real time data visualizantion
 
-![Charts](https://github.com/MatheusCTeixeira/Sensorize-FrontEnd/blob/master/state/deepin-screen-recorder_google-chrome_20190826230755.gif)
+![Charts](https://github.com/MatheusCTeixeira/Sensorize-FrontEnd/blob/master/state/deepin-screen-recorder_google-chrome_20190831151641.gif)
 
 ---
 
