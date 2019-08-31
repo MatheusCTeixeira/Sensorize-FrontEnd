@@ -1,11 +1,12 @@
 import React from "react";
 
-import { Chart, ChartData } from "chart.js";
+import { Chart, ChartData, ChartPoint } from "chart.js";
+import { IChartInputType } from "./ChartInputType";
 
 interface IProps {
     width: number|string;
     height: number|string;
-
+    data: IChartInputType;
 }
 
 interface IState extends IProps {
@@ -27,22 +28,42 @@ export class RegressionChart extends React.Component<IProps, IState> {
         this.chartView = new Chart(context, {
             data: {
                 datasets: [{
-                    label: "data",
-                    data: [{x: 1, y: 2}, {x: 1.5, y: 2.5}],
+                    label: "Samples",
+                    data: [],
                     fill: false,
-                    borderColor: "purple",
-                    backgroundColor: "yellow",
-                }]
+                    borderColor: "black",
+                    backgroundColor: "white",
+                    showLine: false,
+                },{
+                    label: "Regression",
+                    data: [],
+                    fill: false,
+                    borderColor: "black",
+                    backgroundColor: "red",
+                    showLine: true,
+                },]
             },
             type: "line",
             options: {
                 scales: {
-                    yAxes: [{
-                        stacked: true
-                    },],
                     xAxes: [{
-                        type: "linear"
-                    }]
+                        display: true,
+                        type: "time",
+                        time: {
+                            unit: "millisecond",
+                        },
+                        ticks: {
+                            callback: function(value, index, values) {
+                                const nValues = values.length;
+                                const tenPerc = Math.floor(nValues / 10);
+
+                                if (index % tenPerc === 0 || nValues < 10)
+                                    return value;
+
+                                return null;
+                            }
+                        }
+                    }],
                 },
                 layout: {
                     padding: {
@@ -51,6 +72,21 @@ export class RegressionChart extends React.Component<IProps, IState> {
                 }
             }
         });
+
+        setInterval(()=>this.updateChart(), 5000);
+    }
+
+    updateChart = () => {
+        this.chartView.data.datasets[0].data =
+            this.props.data.data.map(dt => dt as ChartPoint);
+
+        this.chartView.data.datasets[1].data =
+            [...this.props.data.data.map(dt => {
+                    dt = {x: dt.x, y: Math.random()*50}
+                    return dt as ChartPoint;
+                })];
+
+        this.chartView.update();
     }
 
     render = () => {

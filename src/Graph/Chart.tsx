@@ -8,7 +8,6 @@ import { Colors } from "./ColorList";
 
 import { IChartInputType } from "./ChartInputType";
 
-import { Statistic } from "./Statistic";
 /* ────────────────────────────────────────────────────────────────────────── */
 
 interface IProps {
@@ -124,7 +123,7 @@ export default class Graph
                 padding: 50,
             },
             animation: {
-                duration: 0,
+                duration: 100,
             }
 
         } as ChartOptions;
@@ -268,8 +267,7 @@ export default class Graph
         viewChartData.datasets.forEach(dataset => {
             if (dataset.label === data.dataSource.label) {
                 dataset.data = (
-                    [...dataset.data as Chart.ChartPoint[], ...P].slice(
-                        -bufferSize)
+                    [...dataset.data as Chart.ChartPoint[], ...P]
                 );
             }
         });
@@ -324,7 +322,6 @@ export default class Graph
                     "height": this.props.height,
                 }} />
 
-            <Statistic />
         </div>
         );
     }

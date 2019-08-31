@@ -7,6 +7,7 @@ import { RouteComponentProps} from "react-router-dom";
 
 import Graph from "../Graph/Chart";
 import { IChartInputType } from "../Graph/ChartInputType";
+import { Statistic } from "../Graph/Statistic";
 
 /* ────────────────────────────────────────────────────────────────────────── */
 
@@ -137,8 +138,13 @@ export default class DisplaySensor extends React.Component<IProps, IState> {
 
     render() {
         if (this.state.chart == null) return null;
-        return <div style={{"width": "100%", "height": 400}}>
-            <Graph subscripton={this.subscribe} chart={this.state.chart} width={"100%"} height={400}/>
-        </div>;
+        return (
+        <div className="container mt-3">
+            <div style={{"width": "100%", "height": 400}}>
+                <Graph subscripton={this.subscribe} chart={this.state.chart} width={"100%"} height={400}/>
+            </div>
+            <Statistic subscripton={this.subscribe} />
+        </div>
+        );
     }
 }
