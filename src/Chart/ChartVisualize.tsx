@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 import { IChart } from "../Types/ChartType";
+import { Button } from "react-bootstrap";
 
 /* ────────────────────────────────────────────────────────────────────────── */
 
@@ -29,9 +30,13 @@ export default class ChartVisualize extends React.Component<IProps, IState> {
         return (<>
         <Link
             to={`/chart/${this.state.chart.id}`}
-            className="btn text-primary mx-2 tootiped-component">
+            className="btn text-primary tootiped-component">
+            <Button
+                className="btn btn-light text-primary tootiped-component"
+                >
             <i className="material-icons">remove_red_eye</i>
             <span className="tooltiptext">Visualize Chart</span>
+            </Button>
         </Link>
         </>);
     }

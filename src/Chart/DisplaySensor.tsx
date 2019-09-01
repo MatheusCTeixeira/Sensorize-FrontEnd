@@ -41,7 +41,7 @@ export default class DisplaySensor extends React.Component<IProps, IState> {
             chart: fetchChart(parseInt(this.props.match.params.id)),
         });
 
-        setInterval(()=>this.fetchData(), 700);
+        setInterval(()=>this.fetchData(), 500);
     }
 
 /* ────────────────────────────────────────────────────────────────────────── */
@@ -85,11 +85,11 @@ export default class DisplaySensor extends React.Component<IProps, IState> {
 
     t: number = 0;
     fetchLine = () => {
-        const Y = Math.sin(this.t++/50)*50;
-        const deviation = () => Math.random() * 5;
+        const Y = Math.sin(this.t++/100)*50;
+        const deviation = () => Math.random() * 15;
 
         const data: IChartInputType = {
-            dataSource: this.state.chart.dataSources[this.t % 2],
+            dataSource: this.state.chart.dataSources[this.t % 3],
             data: [
                 { x: new Date(), y: Y + deviation() },
             ]
@@ -141,9 +141,11 @@ export default class DisplaySensor extends React.Component<IProps, IState> {
         if (this.state.chart == null) return null;
         return (
         <div className="container mt-3">
-            <div style={{"width": "100%", "height": 400}}>
-                <Graph subscripton={this.subscribe} chart={this.state.chart} width={"100%"} height={400}/>
-            </div>
+            <Graph
+                subscripton={this.subscribe}
+                chart={this.state.chart}
+                width={"100%"}
+                height={600}/>
             <Statistic subscripton={this.subscribe} />
         </div>
         );

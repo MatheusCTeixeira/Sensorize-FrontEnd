@@ -4,6 +4,12 @@ import DataSource from "./DataSource/DataSourceView";
 
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 
+import "./Styles/style.css";
+import "./Styles/chart-card.css";
+import "./Styles/chart-comp-style.css";
+import "./Styles/datasource-card.css";
+import "./Styles/statistic-style.css";
+
 /* ────────────────────────────────────────────────────────────────────────── */
 
 // A interface IProps.

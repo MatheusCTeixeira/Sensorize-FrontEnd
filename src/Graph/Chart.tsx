@@ -2,7 +2,7 @@ import React from "react";
 
 import { IChart } from "../Types/ChartType";
 
-import { Chart, ChartData, ChartOptions } from "chart.js";
+import { Chart, ChartData, ChartOptions, ChartPoint } from "chart.js";
 
 import { Colors } from "./ColorList";
 
@@ -29,11 +29,13 @@ export default class Graph
     data     : ChartData;
     options  : ChartOptions;
     timeID   : NodeJS.Timeout;
+    needToUpdate: boolean;
+    timerID: NodeJS.Timeout;
 
     constructor(props: IProps) {
         super(props);
         this.canvas = React.createRef();
-
+        this.needToUpdate = false;
     }
 
     /**
@@ -67,8 +69,10 @@ export default class Graph
                         label: dataSource.label,
                         backgroundColor: Colors[nOfDtSrc].light().toString(),
                         borderColor    : Colors[nOfDtSrc++].light().toString(),
-                        borderWidth    : 1,
+                        borderWidth    : 3,
                         data           : [],
+                        fill: false,
+                        lineTension: 0.0,
                     })
                 ),
         } as ChartData;
@@ -113,7 +117,7 @@ export default class Graph
                 }],
             },
             hover: {
-                animationDuration: 300,
+                animationDuration: 600,
             },
             legend: {
                 display: true,
@@ -123,7 +127,14 @@ export default class Graph
                 padding: 50,
             },
             animation: {
-                duration: 100,
+                duration: 600,
+            },
+            title: {
+                text: (this.props.chart.dataSources
+                        .map(ds => ds.label)
+                        .reduce((prev, curr) => `${prev}, ${curr}`)),
+
+                display: true,
             }
 
         } as ChartOptions;
@@ -183,7 +194,14 @@ export default class Graph
         });
 
         // Inscreve este componente para receber os dados da fonte de dados.
-        this.props.subscripton(this.updateGraph);
+        this.props.subscripton(this.updateGraphData);
+
+        this.timeID = setInterval(this.updateGraph, 3000);
+    }
+
+    componentWillUnmount = () => {
+        if (this.timeID)
+            clearInterval(this.timeID);
     }
 
 /**
@@ -261,13 +279,34 @@ export default class Graph
                 x: point.x,
                 y: point.y,
             } as Chart.ChartPoint;
-        })
+        });
+
+        let olderTime: Date = null;
+        viewChartData.datasets.forEach(dataset => {
+            const data = dataset.data;
+            const len = data.length;
+            const MAX_SAMPLES = this.props.chart.buffer;
+
+            if (data.length < MAX_SAMPLES) return;
+            const dt = (dataset.data[len-MAX_SAMPLES] as Chart.ChartPoint).x as Date;
+
+            if (olderTime == null || olderTime.getTime() > dt.getTime())
+                olderTime = dt;
+        });
 
         // Valores para os demais gráficos. Eixo Y.
         viewChartData.datasets.forEach(dataset => {
             if (dataset.label === data.dataSource.label) {
+                const data = dataset.data as Chart.ChartPoint[];
+                const oldData = olderTime != null ? (data.filter(
+                    dt => (dt.x as Date).getTime() > olderTime.getTime()
+                )) : data;
+
                 dataset.data = (
-                    [...dataset.data as Chart.ChartPoint[], ...P]
+                    [
+                        ...oldData,
+                        ...P
+                    ]
                 );
             }
         });
@@ -289,7 +328,7 @@ export default class Graph
     }
 
     // Atualiza o gráfico quando algum dado chegar.
-    updateGraph = (data: IChartInputType) => {
+    updateGraphData = (data: IChartInputType) => {
 
         switch (this.mappedType()) {
         case "pie":
@@ -308,20 +347,34 @@ export default class Graph
             throw "Chart Type not supported.";
         }
 
+        this.needToUpdate = true;
+
+    }
+
+    // Atualiza o gráfico
+    updateGraph = () => {
+        if (!this.needToUpdate)
+            return;
+
         this.viewChart.update();
+        this.needToUpdate = false;
     }
 
     render = () => {
         return (
         <div className="container">
             <h1 className="text-primary">View</h1>
-            <canvas
-                ref={this.canvas}
-                style={{
-                    "width" : this.props.width,
-                    "height": this.props.height,
-                }} />
-
+            <div style={{
+                        "width" : this.props.width,
+                        "height": this.props.height,
+                    }}>
+                <canvas
+                    ref={this.canvas}
+                    style={{
+                        "width" : this.props.width,
+                        "height": this.props.height,
+                    }} />
+            </div>
         </div>
         );
     }

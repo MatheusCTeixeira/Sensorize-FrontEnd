@@ -11,17 +11,30 @@ interface IProps {
 }
 
 interface IState extends IProps {
-
+    max: number;
+    min: number;
+    stdev: number;
+    mean: number;
 }
 
 export class RegressionChart extends React.Component<IProps, IState> {
     canvas   : React.RefObject<HTMLCanvasElement>;
     chartView: Chart;
+    state: IState;
+    timerID: NodeJS.Timeout;
 
     constructor(props: IProps) {
         super(props);
 
         this.canvas = React.createRef();
+
+        this.state = {
+            ...props,
+            max: undefined,
+            min: undefined,
+            stdev: undefined,
+            mean: undefined,
+        };
     }
 
     componentDidMount = () => {
@@ -36,7 +49,7 @@ export class RegressionChart extends React.Component<IProps, IState> {
                     backgroundColor: "white",
                     showLine: false,
                 },{
-                    label: "Regression",
+                    label: "AR Least Square",
                     data: [],
                     fill: false,
                     borderColor: "black",
@@ -71,17 +84,26 @@ export class RegressionChart extends React.Component<IProps, IState> {
                 },
                 layout: {
                     padding: {
-                        bottom: 120
+                        bottom: 10
                     },
                 },
                 title: {
                     display: true,
                     text: (this.props.data.dataSource.label),
+                },
+                animation: {
+                    duration: 0,
                 }
             }
         });
 
-        setInterval(()=>this.updateChart(), 5000);
+        this.timerID = setInterval(()=>this.updateChartData(), 5000);
+    }
+
+    componentWillUnmount = () => {
+        if (this.timerID)
+            clearInterval(this.timerID);
+
     }
 
     parseToForecast = (data: IData[]) => {
@@ -96,6 +118,12 @@ export class RegressionChart extends React.Component<IProps, IState> {
         return new Promise<[Date, number][]>((resolve, reject) => {
             const parsedData = this.parseToForecast(data);
             const t = new timeseries.main(parsedData);
+            this.setState({
+                max: t.max(),
+                min: t.min(),
+                mean: t.mean(),
+                stdev: t.stdev(),
+            })
 
             t.smoother({period:10}).save('smoothed');
             const bestSettings = t.regression_forecast_optimize();
@@ -108,12 +136,13 @@ export class RegressionChart extends React.Component<IProps, IState> {
         });
     }
 
-    updateChart = () => {
+    updateChartData = () => {
         this.chartView.data.datasets[0].data =
-            this.props.data.data.map(dt => dt as ChartPoint);
+            this.props.data.data.map(dt => dt as ChartPoint).slice(-50);
 
         if (this.props.data.data.length > 5) {
-            this.forecast(this.props.data.data).then(data => {
+            this.forecast(this.props.data.data.slice(-50))
+            .then(data => {
                 const parsedData = this.parseFromForecast(data);
                 this.chartView.data.datasets[1].data = parsedData;
                 this.chartView.update();
@@ -125,9 +154,9 @@ export class RegressionChart extends React.Component<IProps, IState> {
 
     render = () => {
         return (
-        <div className="container">
+        <div className="container mb-4">
             <div className="row justify-content-start">
-            <div style={{width: "100%", height: "300px"}}>
+            <div style={{width: "100%", height: this.props.height}}>
                 <canvas
                     ref={this.canvas}
                     style={{
@@ -135,6 +164,31 @@ export class RegressionChart extends React.Component<IProps, IState> {
                         "height": this.props.height,
                     }} />
                 </div>
+            </div>
+            <div className="row">
+                <table className="statistic-table">
+                    <thead>
+                        <th colSpan={2}>Metrics</th>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Maximum</td>
+                            <td>{this.state.max}</td>
+                        </tr>
+                        <tr>
+                            <td>Minimum</td>
+                            <td>{this.state.min}</td>
+                        </tr>
+                        <tr>
+                            <td>Mean</td>
+                            <td>{this.state.mean}</td>
+                        </tr>
+                        <tr>
+                            <td>Standard Deviation</td>
+                            <td>{this.state.stdev}</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>);
     }
