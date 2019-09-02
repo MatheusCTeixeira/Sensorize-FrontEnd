@@ -1,19 +1,19 @@
 import React from "react";
 
-import { IChart } from "../Types/ChartType";
-
-import { Chart, ChartData, ChartOptions, ChartPoint } from "chart.js";
-
 import { Colors } from "./ColorList";
 
+import { IChart } from "../Types/ChartType";
+
 import { IChartInputType } from "./ChartInputType";
+
+import { Chart, ChartData, ChartOptions } from "chart.js";
 
 /* ────────────────────────────────────────────────────────────────────────── */
 
 interface IProps {
-    chart : IChart;
-    width : number | string;
-    height: number | string;
+    chart      : IChart;
+    width      : number | string;
+    height     : number | string;
     subscripton: (callback: (data: IChartInputType) => any) => any;
 }
 
@@ -24,18 +24,22 @@ interface IState extends IProps {
 export default class Graph
     extends React.Component<IProps, IState> {
 
-    canvas   : React.RefObject<HTMLCanvasElement>;
-    viewChart: Chart;
-    data     : ChartData;
-    options  : ChartOptions;
-    timeID   : NodeJS.Timeout;
-    needToUpdate: boolean;
-    timerID: NodeJS.Timeout;
+    canvas      : React.RefObject<HTMLCanvasElement>;
+    viewChart   : Chart         ;
+    data        : ChartData     ;
+    options     : ChartOptions  ;
+    timeID      : NodeJS.Timeout;
+    needToUpdate: boolean       ;
+    timerID     : NodeJS.Timeout;
 
     constructor(props: IProps) {
         super(props);
-        this.canvas = React.createRef();
+
+        this.canvas       = React.createRef();
         this.needToUpdate = false;
+
+        Chart.defaults.global.defaultFontFamily = "'M PLUS 1p', sans-serif";
+        Chart.defaults.global.defaultFontColor  = "black";
     }
 
     /**
@@ -135,7 +139,8 @@ export default class Graph
                         .reduce((prev, curr) => `${prev}, ${curr}`)),
 
                 display: true,
-            }
+            },
+
 
         } as ChartOptions;
     }
@@ -148,13 +153,17 @@ export default class Graph
 
         switch (chartType) {
         case "Bar Chart":
-            return "bar";
+            return "bar"    ;
+
         case "Line Chart":
-            return "line";
+            return "line"   ;
+
         case "Pie Chart":
-            return "pie";
+            return "pie"    ;
+
         case "Scatter Plot":
             return "scatter";
+
         default:
             throw "Chart Type not supported.";
         }
@@ -167,14 +176,18 @@ export default class Graph
         const chartType = this.props.chart.chartType;
 
         switch (chartType) {
-        case "Bar Chart":
+        case "Bar Chart"   :
             return "category";
-        case "Line Chart":
-            return "time";
-        case "Pie Chart":
-            return "line";
+
+        case "Line Chart"  :
+            return "time"    ;
+
+        case "Pie Chart"   :
+            return "line"    ;
+
         case "Scatter Plot":
-            return "time";
+            return "time"    ;
+
         default:
             throw "Chart Type not supported.";
         }
@@ -196,6 +209,10 @@ export default class Graph
         // Inscreve este componente para receber os dados da fonte de dados.
         this.props.subscripton(this.updateGraphData);
 
+        /**
+         * O Gráfico é atualizado apenas a partir de uma tempo determinado para
+         * não sobrecarregar o browser.
+         */
         this.timeID = setInterval(this.updateGraph, 3000);
     }
 
@@ -281,35 +298,41 @@ export default class Graph
             } as Chart.ChartPoint;
         });
 
+        /**
+         * Quando o algum dataset exceder o tamanho do buffer, a elemento que
+         * excedeu é registrado para que seja utilizado como filtro para os de-
+         * mais datasets. Isso se deve ao fato que uma Data Source pode trans-
+         * mitir mais dados que outra e, portanto, a janela de plotagem seria
+         * diferente para cada data Source. Com esse algoritmo,todos os datasets
+         * possuem o mesmo comprimento de janela.
+         */
         let olderTime: Date = null;
-        viewChartData.datasets.forEach(dataset => {
-            const data = dataset.data;
-            const len = data.length;
-            const MAX_SAMPLES = this.props.chart.buffer;
+        viewChartData.datasets
+            .map(dataset => dataset.data as Chart.ChartPoint[])
+            .filter(data => data.length > bufferSize)
+            .map(data => data[data.length - bufferSize].x as Date)
+            .forEach(dt => {
+                if (olderTime == null || olderTime.getTime() > dt.getTime())
+                    olderTime = dt;
+            });
 
-            if (data.length < MAX_SAMPLES) return;
-            const dt = (dataset.data[len-MAX_SAMPLES] as Chart.ChartPoint).x as Date;
+        /**
+         * Exibe os valores para o dataset específico.
+         * Remove dados mais antigos que orderTime (Leia acima para compreender
+         * o propósito dele).
+         */
+        viewChartData.datasets
+            .filter(dataset => dataset.label === data.dataSource.label)
+            .forEach(dataset => {
+                let oldData_ = dataset.data as Chart.ChartPoint[];
+                if (olderTime) {
+                    oldData_ = oldData_
+                        .filter(data => (
+                            (data.x as Date).getTime() > olderTime.getTime()));
+                }
 
-            if (olderTime == null || olderTime.getTime() > dt.getTime())
-                olderTime = dt;
-        });
-
-        // Valores para os demais gráficos. Eixo Y.
-        viewChartData.datasets.forEach(dataset => {
-            if (dataset.label === data.dataSource.label) {
-                const data = dataset.data as Chart.ChartPoint[];
-                const oldData = olderTime != null ? (data.filter(
-                    dt => (dt.x as Date).getTime() > olderTime.getTime()
-                )) : data;
-
-                dataset.data = (
-                    [
-                        ...oldData,
-                        ...P
-                    ]
-                );
-            }
-        });
+                dataset.data = [...oldData_, ...P];
+            });
     }
 
     /**

@@ -1,8 +1,10 @@
 import React from "react";
 
 import { RegressionChart } from "./RegressionChart";
+
 import { IChartInputType } from "./ChartInputType";
-import { dataSources } from "../mock";
+
+/* ────────────────────────────────────────────────────────────────────────── */
 
 /**
  * subscription é o método para obter dados do outro componente de tal forma
@@ -46,9 +48,9 @@ export class Statistic extends React.Component<IProps, IState> {
          */
         if (this.state.dataSourcesData.findIndex(
             dt => dt.dataSource.id === data.dataSource.id) < 0) {
-            this.setState((state, props) => { return {
+            this.setState((state, props) => ({
                 dataSourcesData: [...state.dataSourcesData, data]
-            }});
+            }));
         }
 
         /**

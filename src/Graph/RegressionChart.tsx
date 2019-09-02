@@ -1,27 +1,31 @@
 import React from "react";
+
+import { Chart, ChartPoint } from "chart.js";
+
 import * as timeseries from "timeseries-analysis";
 
-import { Chart, ChartData, ChartPoint } from "chart.js";
 import { IChartInputType, IData } from "./ChartInputType";
 
+/* ────────────────────────────────────────────────────────────────────────── */
+
 interface IProps {
-    width: number|string;
-    height: number|string;
-    data: IChartInputType;
+    width : number|string  ;
+    height: number|string  ;
+    data  : IChartInputType;
 }
 
 interface IState extends IProps {
-    max: number;
-    min: number;
+    max  : number;
+    min  : number;
     stdev: number;
-    mean: number;
+    mean : number;
 }
 
 export class RegressionChart extends React.Component<IProps, IState> {
     canvas   : React.RefObject<HTMLCanvasElement>;
-    chartView: Chart;
-    state: IState;
-    timerID: NodeJS.Timeout;
+    chartView: Chart         ;
+    state    : IState        ;
+    timerID  : NodeJS.Timeout;
 
     constructor(props: IProps) {
         super(props);
@@ -30,10 +34,10 @@ export class RegressionChart extends React.Component<IProps, IState> {
 
         this.state = {
             ...props,
-            max: undefined,
-            min: undefined,
+            max  : undefined,
+            min  : undefined,
             stdev: undefined,
-            mean: undefined,
+            mean : undefined,
         };
     }
 
@@ -43,18 +47,18 @@ export class RegressionChart extends React.Component<IProps, IState> {
             data: {
                 datasets: [{
                     label: "Samples",
-                    data: [],
-                    fill: false,
-                    borderColor: "black",
+                    data : [],
+                    fill : false,
+                    borderColor    : "black",
                     backgroundColor: "white",
-                    showLine: false,
+                    showLine       : false,
                 },{
                     label: "AR Least Square",
-                    data: [],
-                    fill: false,
-                    borderColor: "black",
+                    data : [],
+                    fill : false,
+                    borderColor    : "black",
                     backgroundColor: "red",
-                    showLine: true,
+                    showLine       : true,
                 },]
             },
             type: "line",
@@ -103,7 +107,6 @@ export class RegressionChart extends React.Component<IProps, IState> {
     componentWillUnmount = () => {
         if (this.timerID)
             clearInterval(this.timerID);
-
     }
 
     parseToForecast = (data: IData[]) => {
@@ -118,38 +121,51 @@ export class RegressionChart extends React.Component<IProps, IState> {
         return new Promise<[Date, number][]>((resolve, reject) => {
             const parsedData = this.parseToForecast(data);
             const t = new timeseries.main(parsedData);
+
             this.setState({
-                max: t.max(),
-                min: t.min(),
-                mean: t.mean(),
+                max  : t.max(),
+                min  : t.min(),
+                mean : t.mean(),
                 stdev: t.stdev(),
             })
 
             t.smoother({period:10}).save('smoothed');
-            const bestSettings = t.regression_forecast_optimize();
+            // const bestSettings = t.regression_forecast_optimize();
 
             resolve(t.sliding_regression_forecast({
+                method: "ARLeastSquare",
                 sample: data.length,
                 degree: 10,
-                method: "ARLeastSquare",
             }).output());
         });
     }
 
     updateChartData = () => {
-        this.chartView.data.datasets[0].data =
-            this.props.data.data.map(dt => dt as ChartPoint).slice(-50);
+        const sampleToAnalyse = 50;
 
+        /**
+         * Plata os dados de uma data Source. Estes não incluem processamento
+         * algum.
+         */
+        this.chartView.data.datasets[0].data =
+            this.props.data.data
+                .map(dt => dt as ChartPoint)
+                .slice(-sampleToAnalyse);
+
+        /**
+         * Assim que o componente tiver dados sufiente, os calculos estatísticos
+         * são realizados.
+         */
         if (this.props.data.data.length > 5) {
-            this.forecast(this.props.data.data.slice(-50))
+            this.forecast(this.props.data.data.slice(-sampleToAnalyse))
             .then(data => {
                 const parsedData = this.parseFromForecast(data);
                 this.chartView.data.datasets[1].data = parsedData;
+
                 this.chartView.update();
             });
         }
 
-        this.chartView.update();
     }
 
     render = () => {
