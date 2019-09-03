@@ -11,10 +11,7 @@ import * as mock from "../mock";
 
 /* ────────────────────────────────────────────────────────────────────────── */
 
-/* FIXME Consertar o problema com o roteamento. Quando a página é recarregada
-   com o link da forma /dir/id, o estilo da página buga. */
-
-// A interface IProps.
+// A interface IProps.s
 interface IProps {
 
 }

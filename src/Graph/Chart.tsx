@@ -4,7 +4,7 @@ import { Colors } from "./ColorList";
 
 import { IChart } from "../Types/ChartType";
 
-import { IChartInputType } from "./ChartInputType";
+import { IChartInputType } from "../Types/ChartInputType";
 
 import { Chart, ChartData, ChartOptions } from "chart.js";
 
@@ -297,6 +297,18 @@ export default class Graph
                 y: point.y,
             } as Chart.ChartPoint;
         });
+
+        console.log("testing...");
+        try {
+        data.data
+            .map(data => new Date(data.x) as Date)
+            .map(date => date.getTime());
+        }
+        catch(err) {
+            console.log("error:");
+            console.log(err);
+        };
+        console.log("passed!");
 
         /**
          * Quando o algum dataset exceder o tamanho do buffer, a elemento que

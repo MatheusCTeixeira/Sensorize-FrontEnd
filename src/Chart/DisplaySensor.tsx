@@ -6,8 +6,10 @@ import { IChart }     from "../Types/ChartType";
 import { RouteComponentProps} from "react-router-dom";
 
 import Graph from "../Graph/Chart";
-import { IChartInputType } from "../Graph/ChartInputType";
+import { IChartInputType } from "../Types/ChartInputType";
 import { Statistic } from "../Graph/Statistic";
+
+import { fetchData as _fetchData } from "../Comunication/Data";
 
 /* ────────────────────────────────────────────────────────────────────────── */
 
@@ -20,8 +22,13 @@ interface IState extends IProps {
     chart?: IChart;
 }
 
+// TODO Verificar a data da requisição mais antiga
+// TODO Criar o timer para cada fonte de dados
+// TODO Mudar a identificação de label para ID
+
 export default class DisplaySensor extends React.Component<IProps, IState> {
     state: IState;
+    timerID: NodeJS.Timeout;
     /**
      * O array subscribers é usado para notificar os componentes de estão conti-
      * dos nesse para obter os dados oriundos da fonte de dados.
@@ -41,7 +48,11 @@ export default class DisplaySensor extends React.Component<IProps, IState> {
             chart: fetchChart(parseInt(this.props.match.params.id)),
         });
 
-        setInterval(()=>this.fetchData(), 500);
+        this.timerID = setInterval(()=>this.fetchData(), 750);
+    }
+
+    componentWillUnmount = () => {
+        clearInterval(this.timerID);
     }
 
 /* ────────────────────────────────────────────────────────────────────────── */
@@ -88,13 +99,21 @@ export default class DisplaySensor extends React.Component<IProps, IState> {
         const Y = Math.sin(this.t++/100)*50;
         const deviation = () => Math.random() * 15;
 
-        const data: IChartInputType = {
+        /* const data: IChartInputType = {
             dataSource: this.state.chart.dataSources[this.t % 3],
             data: [
                 { x: new Date(), y: Y + deviation() },
             ]
         };
-        this.notifyAll(data);
+
+        this.notifyAll(data); */
+
+        _fetchData.fetch(this.state.chart.dataSources[this.t % 3])
+        .then(data => {
+            data.data.forEach(sample => sample.x = new Date(sample.x))
+            this.notifyAll(data)
+        })
+        .catch(err => console.log(err));
     }
 
     fetchPie = () => {
@@ -117,6 +136,7 @@ export default class DisplaySensor extends React.Component<IProps, IState> {
      * cífica deve estar de acordo com essa frequência.
      */
     fetchData = () => {
+
         this.fetchLine();
     }
 

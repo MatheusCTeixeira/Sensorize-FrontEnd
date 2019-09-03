@@ -2,7 +2,7 @@ import React from "react";
 
 import { RegressionChart } from "./RegressionChart";
 
-import { IChartInputType } from "./ChartInputType";
+import { IChartInputType } from "../Types/ChartInputType";
 
 /* ────────────────────────────────────────────────────────────────────────── */
 

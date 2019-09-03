@@ -4,7 +4,7 @@ import { Chart, ChartPoint } from "chart.js";
 
 import * as timeseries from "timeseries-analysis";
 
-import { IChartInputType, IData } from "./ChartInputType";
+import { IChartInputType, IData } from "../Types/ChartInputType";
 
 /* ────────────────────────────────────────────────────────────────────────── */
 
@@ -135,13 +135,13 @@ export class RegressionChart extends React.Component<IProps, IState> {
             resolve(t.sliding_regression_forecast({
                 method: "ARLeastSquare",
                 sample: data.length,
-                degree: 10,
+                degree: 20,
             }).output());
         });
     }
 
     updateChartData = () => {
-        const sampleToAnalyse = 50;
+        const sampleToAnalyse = 100;
 
         /**
          * Plata os dados de uma data Source. Estes não incluem processamento

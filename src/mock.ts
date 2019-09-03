@@ -10,7 +10,7 @@ let dataSources: IDataSource[] = [
         id       : 1,
         dataType : "Continuous",
         ipAddress: "127.0.0.1",
-        port     : 3000,
+        port     : 3001,
         label    : "Sensor #1",
         sampleFrequency: 4,
     } as IDataSource,
@@ -18,7 +18,7 @@ let dataSources: IDataSource[] = [
         id       : 2,
         dataType : "Discrete",
         ipAddress: "127.0.0.1",
-        port     : 3001,
+        port     : 3002,
         label    : "Sensor #2",
         sampleFrequency: 4,
     } as IDataSource,
@@ -26,7 +26,7 @@ let dataSources: IDataSource[] = [
         id       : 3,
         dataType : "Continuous",
         ipAddress: "127.0.0.1",
-        port     : 3002,
+        port     : 3003,
         label    : "Sensor #3",
         sampleFrequency: 4,
     } as IDataSource,
@@ -34,7 +34,7 @@ let dataSources: IDataSource[] = [
         id       : 4,
         dataType : "Discrete",
         ipAddress: "127.0.0.1",
-        port     : 3003,
+        port     : 3004,
         label    : "Sensor #4",
         sampleFrequency: 4,
     } as IDataSource,
@@ -47,9 +47,9 @@ let charts: IChart[] = [
         chartType: "Line Chart",
         label: "Chart #1",
         dataSources: [
-            dataSources[randomInt(0, dataSources.length)],
-            dataSources[randomInt(0, dataSources.length)],
-            dataSources[randomInt(0, dataSources.length)],
+            dataSources[0],
+            dataSources[1],
+            dataSources[2],
         ]
     } as IChart,
     {
@@ -58,9 +58,9 @@ let charts: IChart[] = [
         chartType: "Bar Chart",
         label: "Chart #2",
         dataSources: [
-            dataSources[randomInt(0, dataSources.length)],
-            dataSources[randomInt(0, dataSources.length)],
-            dataSources[randomInt(0, dataSources.length)],
+            dataSources[0],
+            dataSources[1],
+            dataSources[2],
         ]
     } as IChart,
     {
@@ -69,9 +69,9 @@ let charts: IChart[] = [
         chartType: "Scatter Plot",
         label: "Chart #3",
         dataSources: [
-            dataSources[randomInt(0, dataSources.length)],
-            dataSources[randomInt(0, dataSources.length)],
-            dataSources[randomInt(0, dataSources.length)],
+            dataSources[0],
+            dataSources[1],
+            dataSources[2],
         ]
     } as IChart,
     {
@@ -80,9 +80,9 @@ let charts: IChart[] = [
         chartType: "Pie Chart",
         label: "Chart #4",
         dataSources: [
-            dataSources[randomInt(0, dataSources.length)],
-            dataSources[randomInt(0, dataSources.length)],
-            dataSources[randomInt(0, dataSources.length)],
+            dataSources[0],
+            dataSources[1],
+            dataSources[2],
         ]
     } as IChart,
 ];
