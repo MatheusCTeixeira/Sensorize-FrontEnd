@@ -28,7 +28,7 @@ let dataSources: IDataSource[] = [
         ipAddress: "127.0.0.1",
         port     : 3003,
         label    : "Sensor #3",
-        sampleFrequency: 4,
+        sampleFrequency: 1,
     } as IDataSource,
     {
         id       : 4,

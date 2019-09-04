@@ -117,11 +117,17 @@ export class RegressionChart extends React.Component<IProps, IState> {
         return data.map(dt => ({x: dt[0], y: dt[1]} as IData));
     }
 
+    /**
+     * Realiza os calculos estatisticos. Veja:
+     * - https://www.npmjs.com/package/timeseries-analysis
+     * - http://paulbourke.net/miscellaneous/ar/
+     */
     forecast = (data: IData[]) => {
         return new Promise<[Date, number][]>((resolve, reject) => {
             const parsedData = this.parseToForecast(data);
             const t = new timeseries.main(parsedData);
 
+            // Calcula algumas métricas.
             this.setState({
                 max  : t.max(),
                 min  : t.min(),
@@ -129,9 +135,11 @@ export class RegressionChart extends React.Component<IProps, IState> {
                 stdev: t.stdev(),
             })
 
+            // Reduz os ruídos dos dados.
             t.smoother({period:10}).save('smoothed');
             // const bestSettings = t.regression_forecast_optimize();
 
+            // Processa os dados e retorna o resultado.s
             resolve(t.sliding_regression_forecast({
                 method: "ARLeastSquare",
                 sample: data.length,
@@ -141,7 +149,7 @@ export class RegressionChart extends React.Component<IProps, IState> {
     }
 
     updateChartData = () => {
-        const sampleToAnalyse = 100;
+        const sampleToAnalyse = 100; // Quantidades de dados para ser analisado.
         let dataAnalysed = this.props.data.data;
 
         const idx = dataAnalysed.findIndex((curr, i) => {
@@ -154,7 +162,7 @@ export class RegressionChart extends React.Component<IProps, IState> {
         if (idx >= 0) dataAnalysed = dataAnalysed.slice(idx);
 
         /**
-         * Plata os dados de uma data Source. Estes não incluem processamento
+         * Plota os dados de uma data Source. Estes não incluem processamento
          * algum.
          */
         this.chartView.data.datasets[0].data =

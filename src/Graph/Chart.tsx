@@ -339,7 +339,9 @@ export default class Graph
      * Adapta os dados para a plotagem de gráficos no formato do bar Chart.
      * O gráfico em barras é baseado em categorias.
      */
+    // TODO Testar e Refatorar este código.
     barDataParse(data: IChartInputType) {
+        // Adiciona os labels.
         const viewChartData = this.viewChart.data;
         const labels = new Set<string>([
             ...viewChartData.labels as string[],
@@ -347,7 +349,31 @@ export default class Graph
         ]);
         viewChartData.labels = Array.from(labels);
 
-        this.lineDataParse(data);
+        // Converte os dados que chegaram para o farmato esperado.
+        const P = data.data.map(point => {
+            return {
+                x: point.x,
+                y: point.y,
+            } as Chart.ChartPoint;
+        });
+
+        // Adiciona os novos dados de acordo com a posição do label.
+        viewChartData.datasets
+        .filter(dataset => dataset.label === data.dataSource.label)
+        .forEach(dataset => {
+            // Adiciona o dado novo na posição do específica do label.
+            P.forEach(
+                dataSample => {
+                    // Procura o índex do label.
+                    const idx = viewChartData.labels.findIndex(
+                        label => label === dataSample.x
+                    );
+
+                    // Atualiza o valor dos dados.
+                    dataset.data[idx] = dataSample.y as number;
+                }
+            )
+        });
     }
 
     // Atualiza o gráfico quando algum dado chegar.

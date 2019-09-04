@@ -81,8 +81,8 @@ export default class DisplaySensor extends React.Component<IProps, IState> {
 
 /* ────────────────────────────────────────────────────────────────────────── */
 
-    fetchBar = () => {
-        const Y = Math.random()*50;
+    fetchBar = (dataSource: IDataSource) => {
+        /* const Y = Math.random()*50;
         const deviation = () => Math.random() * 10;
 
         const Cat = ["A", "B", "C", "D", "E", "F", "G"];
@@ -93,7 +93,19 @@ export default class DisplaySensor extends React.Component<IProps, IState> {
                 { x: Cat[Math.floor(Math.random()*Cat.length)], y: Y + deviation() },
             ]
         };
-        this.notifyAll(data);
+        this.notifyAll(data); */
+        if (!this.lastDataFetched.has(dataSource.id))
+            this.lastDataFetched.set(dataSource.id, new Date());
+
+        fetch.data(dataSource, this.lastDataFetched.get(dataSource.id))
+        .then(data => {
+            const dataSamples = data.data;
+            dataSamples.forEach(sample => sample.x = sample.x.toString());
+
+            this.lastDataFetched.set(dataSource.id, new Date());
+            this.notifyAll(data)
+        })
+        .catch(err => console.log(err));
     }
 
     fetchScatter = () => {
@@ -158,7 +170,7 @@ export default class DisplaySensor extends React.Component<IProps, IState> {
         if (this.state.chart.chartType !== "Bar Chart")
             this.fetchTimeseries(dataSource);
         else
-            this.fetchBar();
+            this.fetchBar(dataSource);
     }
 
     /**
@@ -188,7 +200,10 @@ export default class DisplaySensor extends React.Component<IProps, IState> {
                 chart={this.state.chart}
                 width={"100%"}
                 height={600}/>
-            <Statistic subscripton={this.subscribe} />
+            { this.state.chart.chartType !== "Bar Chart"   ?
+                <Statistic subscripton={this.subscribe} /> :
+                null
+            }
         </div>
         );
     }
