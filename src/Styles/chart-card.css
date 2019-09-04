@@ -9,7 +9,7 @@
 }
 
 .chart-card .chart-features tr:hover {
-    background-color: darkgray;
+    background-color: yellow;
 }
 
 .chart-card .chart-features tr > td:first-child {

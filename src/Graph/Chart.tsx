@@ -298,18 +298,6 @@ export default class Graph
             } as Chart.ChartPoint;
         });
 
-        console.log("testing...");
-        try {
-        data.data
-            .map(data => new Date(data.x) as Date)
-            .map(date => date.getTime());
-        }
-        catch(err) {
-            console.log("error:");
-            console.log(err);
-        };
-        console.log("passed!");
-
         /**
          * Quando o algum dataset exceder o tamanho do buffer, a elemento que
          * excedeu é registrado para que seja utilizado como filtro para os de-
@@ -398,7 +386,7 @@ export default class Graph
     render = () => {
         return (
         <div className="container">
-            <h1 className="text-primary">View</h1>
+            <h1 className="text-black">View</h1>
             <div style={{
                         "width" : this.props.width,
                         "height": this.props.height,

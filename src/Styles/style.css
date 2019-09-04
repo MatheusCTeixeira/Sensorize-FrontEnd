@@ -1,8 +1,11 @@
+body {
+    font-family     : 'M PLUS 1p', 'Courgette', cursive;
+}
+
 /* Menu do logo. */
 .top-bar {
-    background-color: #152740             ;
-    color           : #FFFF00             ;
-    font-family     : 'Courgette', cursive;
+    background-color: black             ;
+    font-family     : 'M PLUS 1p', 'Courgette', cursive;
     font-size       : 50px                ;
     height          : 80px                ;
     padding-left    : 100px               ;
@@ -12,9 +15,15 @@
     border-bottom   : 1px solid yellow  ;
 }
 
+.top-bar label {
+    color          : yellow;
+    text-decoration: none;
+    cursor         : pointer;
+}
+
 /* Menu a esquerda. */
 .left-menu {
-    background-color: #204a85;
+    background-color: white;
     height          : 100%   ;
     left            : -180px ;
     padding-left    : 20px   ;
@@ -23,6 +32,7 @@
     position        : fixed  ;
     right           : 200px  ;
     width           : 200px  ;
+    box-shadow: 3px 0px 10px 0px gray;
     transition: left 200ms;
 }
 
@@ -32,16 +42,14 @@
 
 /* Local do avatar. */
 .avatar {
-    background-color: #152740;
-    border-radius   : 5%     ;
+    background-color:black;
     height          : 200px  ;
-    margin          : 5px    ;
     padding         : 20px   ;
 }
 
 /* Item default do avatar. */
 .avatar > i {
-    color    : #204a85              ;
+    color    : yellow              ;
     font-size: 60px                 ;
     left     : 50%                  ;
     position : relative             ;
@@ -51,12 +59,14 @@
 
 /* Item do menu. */
 .menu-item {
-    border-radius: 5px                ;
-    border       : 1px solid #204a85  ;
-    color        : white              ;
-    padding      : 10px               ;
+    border       : 1px solid black  ;
+    color        : black              ;
+    padding      : 1px               ;
     transition   : border 500ms linear;
     width        : 100%               ;
+    margin-top:3px;
+    margin-bottom:3px;
+
 }
 
 /* Ícone do menu. */
@@ -73,7 +83,7 @@
 /* Quando o mause está sobre os itens do menu. */
 .menu-item:hover {
     border          : 1px solid rgb(158, 112, 26);
-    background-color: #152740                    ;
+    background-color: black                    ;
     color           : yellow                     ;
     cursor          : pointer                    ;
 }
@@ -87,4 +97,13 @@
     text-align: center  ;
     margin-bottom: 300px;
     z-index: -10;
+}
+
+.text-black {
+    color: black;
+}
+
+.card {
+    border-radius: 0px;
+    color: black;
 }

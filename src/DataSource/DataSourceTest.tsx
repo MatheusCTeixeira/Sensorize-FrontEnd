@@ -1,7 +1,10 @@
 import React from "react";
 import { Button, Modal } from "react-bootstrap";
 
+import { fetch } from "../Comunication/Data";
+
 import { IDataSource } from "../Types/DataSourceType";
+import { IDataSourceStatus, EStatus } from "../Types/DataSourceStatus";
 
 /* ────────────────────────────────────────────────────────────────────────── */
 
@@ -12,7 +15,8 @@ interface IProps {
 
 // A interface IState.
 interface IState extends IProps {
-    modal: boolean,
+    modal: boolean;
+    status: IDataSourceStatus;
 }
 
 // Esta classe trata das funcionalidades pertinentes aos testes de uma
@@ -23,7 +27,15 @@ export default class DataSourceTest extends React.Component<IProps, IState> {
 
     constructor(props: IProps) {
         super(props);
-        this.state = { ...props, modal: false, };
+
+        this.state = {
+            ...props,
+            modal: false,
+            status: {
+                sensorStatus  : EStatus.Off,
+                uptime        : null,
+                requestPerHour: null,
+            }};
     }
 
     hideModal = () => {
@@ -32,6 +44,28 @@ export default class DataSourceTest extends React.Component<IProps, IState> {
 
     showModal = () => {
         this.setState({modal: true});
+    }
+
+    componentDidMount = () => {
+        this.fetchDataSourceStatus();
+    }
+
+    fetchDataSourceStatus = () => {
+        fetch.status(this.state.dataSource)
+        .then(status => {
+            this.setState({
+                status: status
+            });
+        })
+        .catch(() => {
+            this.setState({
+                status: {
+                    sensorStatus  : EStatus.Off,
+                    uptime        : null,
+                    requestPerHour: null,
+                }
+            });
+        });
     }
 
     render() {
@@ -43,21 +77,42 @@ export default class DataSourceTest extends React.Component<IProps, IState> {
             <Modal.Body className="text-center">
                 <h4>Test Data Source</h4>
                 <div className="p-3"/>
-                <Button variant="success">Send Request</Button>
+                <Button
+                    variant="success"
+                    onClick={this.fetchDataSourceStatus}>
+                    Send Request
+                </Button>
                 <div className="p-2"/>
                 <table className="table-view w-100">
-                        <tbody>
+                    <tbody>
                         <tr>
                             <td>Status</td>
-                            <td>Ok</td>
+                            <td>
+                                {this.state.status.sensorStatus.toString()}
+                            </td>
                         </tr>
                         <tr>
                             <td>Up Time</td>
-                            <td>234h:22m:12s</td>
+                            <td>
+                                {
+                                    this.state.status.uptime  ?
+                                    this.state
+                                        .status
+                                        .uptime
+                                        .toLocaleDateString() :
+                                    "--:--:--"
+                                }
+                            </td>
                         </tr>
                         <tr>
                             <td>Request per hour</td>
-                            <td>23032</td>
+                            <td>
+                                {
+                                    this.state.status.requestPerHour ?
+                                    this.state.status.requestPerHour :
+                                    "---"
+                                }
+                            </td>
                         </tr>
                         </tbody>
                     </table>

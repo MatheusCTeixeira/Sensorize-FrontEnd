@@ -59,7 +59,7 @@ export default class DataSourceCard extends Component<IProps, IState> {
                         </tbody>
                     </table>
                 </div>
-
+                <div>
                 <DataSourceDelete
                     dataSource={this.state.dataSource}
                     deleteCallback={this.props.deleteCallback}
@@ -73,6 +73,7 @@ export default class DataSourceCard extends Component<IProps, IState> {
                 <DataSourceTest
                     dataSource={this.state.dataSource}
                 />
+                </div>
 
             </div>
         </div>);

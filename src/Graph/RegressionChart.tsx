@@ -142,13 +142,23 @@ export class RegressionChart extends React.Component<IProps, IState> {
 
     updateChartData = () => {
         const sampleToAnalyse = 100;
+        let dataAnalysed = this.props.data.data;
+
+        const idx = dataAnalysed.findIndex((curr, i) => {
+            const currDate = curr.x as Date;
+            const prevDate = i-1 >= 0 ? dataAnalysed[i-1].x as Date : currDate;
+
+            return currDate.getTime() < prevDate.getTime();
+        });
+
+        if (idx >= 0) dataAnalysed = dataAnalysed.slice(idx);
 
         /**
          * Plata os dados de uma data Source. Estes não incluem processamento
          * algum.
          */
         this.chartView.data.datasets[0].data =
-            this.props.data.data
+            dataAnalysed
                 .map(dt => dt as ChartPoint)
                 .slice(-sampleToAnalyse);
 
@@ -156,8 +166,8 @@ export class RegressionChart extends React.Component<IProps, IState> {
          * Assim que o componente tiver dados sufiente, os calculos estatísticos
          * são realizados.
          */
-        if (this.props.data.data.length > 5) {
-            this.forecast(this.props.data.data.slice(-sampleToAnalyse))
+        if (dataAnalysed.length > 5) {
+            this.forecast(dataAnalysed.slice(-sampleToAnalyse))
             .then(data => {
                 const parsedData = this.parseFromForecast(data);
                 this.chartView.data.datasets[1].data = parsedData;

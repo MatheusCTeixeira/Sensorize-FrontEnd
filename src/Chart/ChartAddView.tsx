@@ -48,7 +48,7 @@ export default class ChartPrompt
             throw Error("Invalid Input Fields");
 
         const chart = this.controller.readInput();
-        // TODO Buscar do servidor.
+        // TODO Buscar do servidor o ID.
         chart.id = Math.random();
 
         this.props.addCallback(chart);

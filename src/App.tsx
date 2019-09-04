@@ -33,7 +33,13 @@ export default class App extends React.Component<IProps, IState> {
 
     render = () => (
     <div>
-        <div className="top-bar">Sensorize</div>
+        <div className="top-bar">
+            <Link to="/home">
+                <label>
+                    Sensorize
+                </label>
+            </Link>
+        </div>
         <div className="left-menu">
             <div className="avatar">
                 <i className="material-icons">account_circle</i>

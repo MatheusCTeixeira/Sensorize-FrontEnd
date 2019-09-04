@@ -12,7 +12,7 @@ let dataSources: IDataSource[] = [
         ipAddress: "127.0.0.1",
         port     : 3001,
         label    : "Sensor #1",
-        sampleFrequency: 4,
+        sampleFrequency: 0.5,
     } as IDataSource,
     {
         id       : 2,
@@ -20,7 +20,7 @@ let dataSources: IDataSource[] = [
         ipAddress: "127.0.0.1",
         port     : 3002,
         label    : "Sensor #2",
-        sampleFrequency: 4,
+        sampleFrequency: 1,
     } as IDataSource,
     {
         id       : 3,
@@ -49,7 +49,7 @@ let charts: IChart[] = [
         dataSources: [
             dataSources[0],
             dataSources[1],
-            dataSources[2],
+            // dataSources[2],
         ]
     } as IChart,
     {

@@ -77,10 +77,10 @@ export class Statistic extends React.Component<IProps, IState> {
     ));
 
     render = () => {
-        if (this.state.dataSourcesData.length < 2) return null;
+        if ((this.state.dataSourcesData.length > 0) === false) return null;
         return (
         <div className="container mt-5">
-            <h3 className="text-primary">Statistics</h3>
+            <h3 className="text-black">Statistics</h3>
             <div className="row">
                 {this.addRegression()}
             </div>

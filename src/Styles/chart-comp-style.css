@@ -8,17 +8,16 @@
     position: relative;
     width: 100px;
     left: 0px;
-    color: #204a85;
+    color: black;
     border: 1px solid gray;
     font-size: 50px;
-    border-radius: 10px;
     margin: 20px 5px;
     transition: background-color 500ms;
 }
 
 .add-component > i:hover {
-    color: white;
-    background-color: #204a85;
+    color: yellow;
+    background-color: black;
     cursor: pointer;
 }
 

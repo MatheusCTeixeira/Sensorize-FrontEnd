@@ -9,7 +9,8 @@ import Graph from "../Graph/Chart";
 import { IChartInputType } from "../Types/ChartInputType";
 import { Statistic } from "../Graph/Statistic";
 
-import { fetchData as _fetchData } from "../Comunication/Data";
+import { fetch } from "../Comunication/Data";
+import { IDataSource } from "../Types/DataSourceType";
 
 /* ────────────────────────────────────────────────────────────────────────── */
 
@@ -22,9 +23,8 @@ interface IState extends IProps {
     chart?: IChart;
 }
 
-// TODO Verificar a data da requisição mais antiga
-// TODO Criar o timer para cada fonte de dados
-// TODO Mudar a identificação de label para ID
+// TODO Criar o Bar Chart.
+// TODO Criar a politica de notificação de erro.
 
 export default class DisplaySensor extends React.Component<IProps, IState> {
     state: IState;
@@ -37,25 +37,50 @@ export default class DisplaySensor extends React.Component<IProps, IState> {
      */
     subscribers: Array<(data: IChartInputType) => any>;
 
+    /**
+     * "lastDataFetched" é responsável por guardar o momenta da última amostra
+     * recebido da data Source.
+     */
+    lastDataFetched: Map<number, Date> = new Map();
+
+    dataSourceRequestTimer: NodeJS.Timeout[] = new Array();
+
     constructor(props: IProps) {
         super(props);
         this.state = {...props};
         this.subscribers = new Array<(data: any) => any>();
     }
 
+    /**
+     * Inicia a realizar o fetch dos dados nas data sources. Cada data source
+     * possui sua frequência de amostragem específica e, portanto, deve possuir
+     * um timer de acordo com essa frequência.
+     */
+    startSampling = () => {
+        this.state.chart
+            .dataSources
+            .forEach(dataSource => {
+                const timerID = setInterval(
+                    () => this.fetchData(dataSource),
+                    1000 / dataSource.sampleFrequency
+                );
+
+                this.dataSourceRequestTimer.push(timerID);
+            });
+    }
+
     componentDidMount = () => {
         this.setState({
             chart: fetchChart(parseInt(this.props.match.params.id)),
         });
-
-        this.timerID = setInterval(()=>this.fetchData(), 750);
     }
 
     componentWillUnmount = () => {
-        clearInterval(this.timerID);
+        this.dataSourceRequestTimer.forEach(clearInterval);
     }
 
 /* ────────────────────────────────────────────────────────────────────────── */
+
     fetchBar = () => {
         const Y = Math.random()*50;
         const deviation = () => Math.random() * 10;
@@ -94,23 +119,17 @@ export default class DisplaySensor extends React.Component<IProps, IState> {
         this.notifyAll(data);
     }
 
-    t: number = 0;
-    fetchLine = () => {
-        const Y = Math.sin(this.t++/100)*50;
-        const deviation = () => Math.random() * 15;
+    fetchTimeseries = (dataSource: IDataSource) => {
+        if (!this.lastDataFetched.has(dataSource.id))
+            this.lastDataFetched.set(dataSource.id, new Date());
 
-        /* const data: IChartInputType = {
-            dataSource: this.state.chart.dataSources[this.t % 3],
-            data: [
-                { x: new Date(), y: Y + deviation() },
-            ]
-        };
-
-        this.notifyAll(data); */
-
-        _fetchData.fetch(this.state.chart.dataSources[this.t % 3])
+        fetch.data(dataSource, this.lastDataFetched.get(dataSource.id))
         .then(data => {
-            data.data.forEach(sample => sample.x = new Date(sample.x))
+            const dataSamples = data.data;
+            const lastDate = data.data[data.data.length - 1].x as Date;
+            dataSamples.forEach(sample => sample.x = new Date(sample.x));
+
+            this.lastDataFetched.set(dataSource.id, lastDate);
             this.notifyAll(data)
         })
         .catch(err => console.log(err));
@@ -135,9 +154,11 @@ export default class DisplaySensor extends React.Component<IProps, IState> {
      * portanto, a frequência de requisições enviadas a uma fonte de dados espe-
      * cífica deve estar de acordo com essa frequência.
      */
-    fetchData = () => {
-
-        this.fetchLine();
+    fetchData = (dataSource: IDataSource) => {
+        if (this.state.chart.chartType !== "Bar Chart")
+            this.fetchTimeseries(dataSource);
+        else
+            this.fetchBar();
     }
 
     /**
@@ -159,6 +180,7 @@ export default class DisplaySensor extends React.Component<IProps, IState> {
 
     render() {
         if (this.state.chart == null) return null;
+        this.startSampling();
         return (
         <div className="container mt-3">
             <Graph
