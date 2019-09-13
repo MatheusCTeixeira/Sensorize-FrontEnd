@@ -1,10 +1,14 @@
 import React            from "react"                  ;
+
+import {NotificationManager} from "react-notifications";
+
 import DataSourceCard   from "./DataSourceCard"       ;
 import DataSourcePrompt from "./DataSourceAddView"    ;
 
 import { IDataSource }  from "../Types/DataSourceType";
 
 import * as mock        from "../mock"                ;
+import { fetchAllDataSources } from "../Comunication/DataSource";
 
 /* ────────────────────────────────────────────────────────────────────────── */
 
@@ -31,9 +35,15 @@ export default class DataSource extends React.Component<IProps, IState> {
     }
 
     componentDidMount = () => {
-        this.setState( {
-            dataSources: mock.dataSources,
+        fetchAllDataSources().then(dataSources => {
+            this.setState( {
+                dataSources: dataSources,
+            });
+        })
+        .catch(error => {
+            NotificationManager.error("Could not load Data Sources!");
         });
+
     }
 
     componentWillUnmount = () => {

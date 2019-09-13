@@ -45,11 +45,11 @@ let charts: IChart[] = [
         id: 1,
         buffer: 70,
         chartType: "Line Chart",
-        label: "Chart #1",
+        label: "Temperature Scale (ºC)",
         dataSources: [
             dataSources[0],
             dataSources[1],
-            // dataSources[2],
+            dataSources[2],
         ]
     } as IChart,
     {
@@ -67,7 +67,7 @@ let charts: IChart[] = [
         id: 3,
         buffer: 50,
         chartType: "Scatter Plot",
-        label: "Chart #3",
+        label: "Radioactivity (Bq)",
         dataSources: [
             dataSources[0],
             dataSources[1],
@@ -78,7 +78,7 @@ let charts: IChart[] = [
         id: 4,
         buffer: 10,
         chartType: "Pie Chart",
-        label: "Chart #4",
+        label: "Disk Storage Space (GB)",
         dataSources: [
             dataSources[0],
             dataSources[1],

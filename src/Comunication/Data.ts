@@ -6,7 +6,7 @@ import { IDataSourceStatus } from "../Types/DataSourceStatus";
 
 
 class fetch {
-
+    // Busca o dados de uma Data Source específica.
     static data(
         dataSource: IDataSource,
         lastSampleTime: Date = new Date())

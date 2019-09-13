@@ -5,16 +5,19 @@ import App from './App';
 import * as serviceWorker from './serviceWorker';
 import { BrowserRouter } from "react-router-dom";
 
+import "./Styles/style.css";
+import "./Styles/chart-card.css";
+import "./Styles/chart-comp-style.css";
+import "./Styles/datasource-card.css";
+import "./Styles/statistic-style.css";
 
 function BootstrapApp() {
     return (<>
-
-    <BrowserRouter
-        basename={"/"}
-        forceRefresh={true}
-    >
-    <App/>
-    </BrowserRouter>
+        <BrowserRouter
+            basename={"/"}
+            forceRefresh={true}>
+            <App/>
+        </BrowserRouter>
     </>);
 }
 

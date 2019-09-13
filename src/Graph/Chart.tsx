@@ -134,9 +134,8 @@ export default class Graph
                 duration: 600,
             },
             title: {
-                text: (this.props.chart.dataSources
-                        .map(ds => ds.label)
-                        .reduce((prev, curr) => `${prev}, ${curr}`)),
+                text: (this.props.chart.label),
+                fontSize: 16,
 
                 display: true,
             },

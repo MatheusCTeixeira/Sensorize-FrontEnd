@@ -1,10 +1,13 @@
 import React from "react";
 import { Button, Modal, FormLabel, FormText } from "react-bootstrap";
 
+import {NotificationManager} from "react-notifications";
+
 import { IChart } from "../Types/ChartType";
 import { Form } from "react-bootstrap";
 
 import { ChartController } from "./ChartController";
+import { updateChart } from "../Comunication/Chart";
 
 /* ────────────────────────────────────────────────────────────────────────── */
 
@@ -33,13 +36,27 @@ export default class ChartEdit extends React.Component<IProps, IState> {
 /* ────────────────────────────────────────────────────────────────────────── */
 
     editChart: () => void = () => {
-        if (this.controller.checkForNullInputs())
-            throw Error("Invalid Input Fields");
+        if (this.controller.checkForNullInputs()) {
+            const msg = "Invalid Input Fields";
 
+            NotificationManager.error(msg);
+            throw Error(msg);
+        }
+
+        // TEST testar comunicação.
         let chart: IChart = this.controller.readInput();
-        chart.id = this.state.chart.id;
+        updateChart(chart)
+        .then(updatedChart => {
+            chart = updatedChart;
+            this.props.editCallback(chart);
 
-        this.props.editCallback(chart);
+            NotificationManager.success("Chart updated!");
+        })
+        .catch(err => {
+            NotificationManager.error("Could not update Chart!");
+        })
+
+        chart.id = this.state.chart.id;
 
         this.hideModal();
     }

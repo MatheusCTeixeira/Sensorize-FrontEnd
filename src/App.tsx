@@ -2,13 +2,20 @@ import React      from 'react'                  ;
 import Chart      from "./Chart/ChartView"          ;
 import DataSource from "./DataSource/DataSourceView";
 
-import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+import { BrowserRouter, Route, Link, Switch } from "react-router-dom";
+import {Router} from "react-router";
 
 import "./Styles/style.css";
 import "./Styles/chart-card.css";
 import "./Styles/chart-comp-style.css";
 import "./Styles/datasource-card.css";
 import "./Styles/statistic-style.css";
+import 'react-notifications/lib/notifications.css';
+import { LoginScreen } from './Login/LoginScreen';
+import {Home} from './Home';
+import { Intro } from './Intro';
+import DisplaySensor from './Chart/DisplaySensor';
+import { createBrowserHistory } from 'history';
 
 /* ────────────────────────────────────────────────────────────────────────── */
 
@@ -25,6 +32,8 @@ interface IState extends IProps {
 
 export default class App extends React.Component<IProps, IState> {
     state: IState;
+    history = createBrowserHistory();
+
 
     constructor(props: IProps) {
         super(props);
@@ -32,51 +41,17 @@ export default class App extends React.Component<IProps, IState> {
     }
 
     render = () => (
-    <div>
-        <div className="top-bar">
-            <Link to="/home">
-                <label>
-                    Sensorize
-                </label>
-            </Link>
-        </div>
-        <div className="left-menu">
-            <div className="avatar">
-                <i className="material-icons">account_circle</i>
-            </div>
-            <Link to="/home">
-                <div className="menu-item">
-                    <i className="material-icons mx-1">home</i>
-                    <label>Home</label>
-                </div>
-            </Link>
-            <Link to="/chart">
-                <div className="menu-item">
-                    <i className="material-icons mx-1">insert_chart</i>
-                    <label>Charts</label>
-                </div>
-            </Link>
-            <Link to="/datasource">
-                <div className="menu-item">
-                    <i className="material-icons mx-1">
-                        settings_applications
-                    </i>
-                    <label>Data Source</label>
-                </div>
-            </Link>
-            <Link to="/logout">
-                <div className="menu-item">
-                    <i className="material-icons mx-1">exit_to_app</i>
-                    <label>Logout</label>
-                </div>
-            </Link>
-        </div>
-        <Router basename="/">
-            <div   className = "viewport">
-                <Route path  = "/datasource" component = {DataSource} />
-                <Route path  = "/chart"      component = {Chart} />
+        <Router history={this.history}>
+            <Switch>
+                <Route exact path  = "/"  component = {Intro} />
+                <Route path  = "/login" component = {LoginScreen} />
+                <Route path  = "/*"  component = {Home} />
+            </Switch>
+            <div className="viewport">
+                <Route path="/datasource" component={DataSource} />
+                <Route exact path="/chart" component={Chart} />
+                <Route path="/chart/:id" component={DisplaySensor} />
             </div>
         </Router>
-    </div>
     );
 }

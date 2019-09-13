@@ -100,8 +100,12 @@ export default class Chart extends React.Component<IProps, IState> {
 /* ────────────────────────────────────────────────────────────────────────── */
 
     render() {
-        return (
-        <Router>
+        return (<>
+            <ChartPrompt addCallback={this.addChart} />
+            {this.makeList()}
+        </>);
+
+        {/* <Router>
             <div>
                 <Route path="/chart" exact
                     render={(props:IProps) =>
@@ -109,9 +113,9 @@ export default class Chart extends React.Component<IProps, IState> {
 
                 <Route path="/chart" exact component={this.makeList}/>
 
-                <Route path="/chart/:id" component={DisplaySensor}/>
+                <Route path="/plot/:id" component={DisplaySensor}/>
             </div>
-        </Router>);
+        </Router>); */}
     }
 
 }

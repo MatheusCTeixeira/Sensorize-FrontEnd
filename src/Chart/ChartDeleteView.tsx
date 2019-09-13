@@ -1,7 +1,10 @@
 import React from "react";
 import { Button, Modal } from "react-bootstrap";
 
+import {NotificationManager} from "react-notifications";
+
 import { IChart } from "../Types/ChartType";
+import { deleteChart } from "../Comunication/Chart";
 
 /* ────────────────────────────────────────────────────────────────────────── */
 
@@ -27,8 +30,20 @@ export default class ChartDelete extends React.Component<IProps, IState> {
 
 /* ────────────────────────────────────────────────────────────────────────── */
 
-    deleteChart = () => {
-        this.props.deleteCallback(this.state.chart);
+    removeChart = () => {
+        const chart = this.state.chart;
+
+        // TEST Testar comunicação com o servidor.
+        deleteChart(chart.id)
+        .then(res => {
+            if (!res)
+                throw new Error("Could not delete Chart!");
+
+            this.props.deleteCallback(chart);
+        })
+        .catch(err => {
+            NotificationManager.error("Could not delete Chart!");
+        });
 
         this.hideModal();
     }
@@ -61,7 +76,7 @@ export default class ChartDelete extends React.Component<IProps, IState> {
                 </Button>
 
                 <Button variant="danger"
-                    onClick={this.deleteChart}>
+                    onClick={this.removeChart}>
                     Delete
                 </Button>
             </Modal.Footer>

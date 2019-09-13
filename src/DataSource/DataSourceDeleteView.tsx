@@ -1,7 +1,9 @@
 import React from "react";
 import { Button, Modal } from "react-bootstrap";
+import {NotificationManager} from "react-notifications";
 
 import { IDataSource } from "../Types/DataSourceType";
+import { deleteDataSource } from "../Comunication/DataSource";
 
 /* ────────────────────────────────────────────────────────────────────────── */
 
@@ -38,9 +40,21 @@ export default class DataSourceDelete extends React.Component<IProps, IState> {
 /* ────────────────────────────────────────────────────────────────────────── */
 
     delete = () => {
-        this.props.deleteCallback(this.props.dataSource);
-
+        const dataSource = this.props.dataSource;
         this.hideModal();
+
+        // TEST Testar comunicação com o servidor.
+        deleteDataSource(dataSource.id)
+        .then(res => {
+            if (!res)
+                throw new Error("Could not delete Data Source");
+
+            this.props.deleteCallback(dataSource);
+            NotificationManager.success("Data Source deleted!");
+        })
+        .catch(error => {
+            NotificationManager.error("Could not delete Data Source");
+        });
     }
 
 /* ────────────────────────────────────────────────────────────────────────── */

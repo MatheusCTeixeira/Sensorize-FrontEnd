@@ -1,8 +1,11 @@
 import React from "react";
-import { Button, Modal, Form, FormText, FormLabel } from "react-bootstrap"
+import ModalHeader from "react-bootstrap/ModalHeader";
+import { NotificationManager } from "react-notifications";
+import { Button, Modal, Form, FormText, FormLabel, FormGroup, ModalFooter,
+        ModalBody, ModalTitle } from "react-bootstrap"
 
 import { IDataSource } from "../Types/DataSourceType";
-
+import { addDataSource } from "../Comunication/DataSource";
 import { DataSourceController } from "./DataSourceController";
 
 /* ────────────────────────────────────────────────────────────────────────── */
@@ -41,21 +44,32 @@ export default class DataSourcePrompt
 /* ────────────────────────────────────────────────────────────────────────── */
 
 
-    add: () => any = () => {
-        const dataSource = this.controller.readInput();
-        // TODO Busca id do servidor.
-        dataSource.id = Math.random();
+    add: () => void = () => {
 
-        this.props.addCallback(dataSource);
+        let dataSource = this.controller.readInput();
 
         this.hideModal();
+
+        // Envia uma requisição para adicionar a DataSource. Se tudo ocorrer bem
+        // a Data Source é adicionada na lista e uma mensagem de sucesso é gera-
+        // da. Caso contrário, uma mensagem de erro é gerada.
+        addDataSource(dataSource)
+        .then(addedDataSource => {
+            dataSource = addedDataSource;
+            this.props.addCallback(dataSource); // Adiciona na lista.
+
+            NotificationManager.success("Data Source added!");
+        })
+        .catch(() => {
+            NotificationManager.error("Could not add Data Source!");
+        });
     }
 
 /* ────────────────────────────────────────────────────────────────────────── */
 
     makeAddBody: () => React.ReactNode = () => <div>
         <Form>
-        <Form.Group controlId="formBasicEmail">
+        <FormGroup controlId="formBasicEmail">
 
             <FormLabel>IP Address</FormLabel>
             <input
@@ -67,47 +81,47 @@ export default class DataSourcePrompt
             Data Source IP Address. Eg. 127.0.0.1
             </FormText>
 
-            <Form.Label>Port Number</Form.Label>
+            <FormLabel>Port Number</FormLabel>
             <input
                 type="number"
                 className="form-control"
                 placeholder="Port Number"
                 ref={this.controller.port}/>
-            <Form.Text className="text-muted">
-            Data Source Port Number. Eg. 3000
-            </Form.Text>
+            <FormText className="text-muted">
+            Port Number ≥ 3000.
+            </FormText>
 
-            <Form.Label>Label</Form.Label>
+            <FormLabel>Label</FormLabel>
             <input
                 type="text"
                 className="form-control"
                 placeholder="Data Source Label"
                 ref={this.controller.label} />
-            <Form.Text className="text-muted">
+            <FormText className="text-muted">
             Data Source Label. Eg. Sensor #1
-            </Form.Text>
+            </FormText>
 
-            <Form.Label>Data Type</Form.Label>
+            <FormLabel>Data Type</FormLabel>
             <input
                 type="text"
                 className="form-control"
                 placeholder="Data Type"
                 ref={this.controller.dataType} />
-            <Form.Text className="text-muted">
+            <FormText className="text-muted">
             Continuous or Discrete.
-            </Form.Text>
+            </FormText>
 
-            <Form.Label>Sample Frequency</Form.Label>
+            <FormLabel>Sample Frequency</FormLabel>
             <input
                 type="number"
                 className="form-control"
                 placeholder="Sample Frequency"
                 ref={this.controller.sampleFrequency} />
-            <Form.Text className="text-muted">
+            <FormText className="text-muted">
             Sample Frequency ≤ 4Hz.
-            </Form.Text>
+            </FormText>
 
-        </Form.Group>
+        </FormGroup>
         </Form>
     </div>;
 
@@ -120,15 +134,15 @@ export default class DataSourcePrompt
         </div>
 
         <Modal show={this.state.show} onHide={this.hideModal}>
-            <Modal.Header closeButton>
-                <Modal.Title>Data Source</Modal.Title>
-            </Modal.Header>
+            <ModalHeader /* closeButton */>
+                <ModalTitle>Data Source</ModalTitle>
+            </ModalHeader>
 
-            <Modal.Body>
+            <ModalBody>
             { this.makeAddBody() }
-            </Modal.Body>
+            </ModalBody>
 
-            <Modal.Footer>
+            <ModalFooter>
                 <Button
                     variant="secondary"
                     onClick={this.hideModal}>
@@ -140,7 +154,7 @@ export default class DataSourcePrompt
                     onClick={this.add}>
                     Add
                 </Button>
-            </Modal.Footer>
+            </ModalFooter>
         </Modal>
         </>
         );

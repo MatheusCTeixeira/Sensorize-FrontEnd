@@ -1,8 +1,8 @@
 import React from "react";
-import { Button, Modal } from "react-bootstrap";
+import ModalHeader from "react-bootstrap/ModalHeader";
+import { Button, Modal, ModalFooter, ModalBody } from "react-bootstrap";
 
 import { fetch } from "../Comunication/Data";
-
 import { IDataSource } from "../Types/DataSourceType";
 import { IDataSourceStatus, EStatus } from "../Types/DataSourceStatus";
 
@@ -51,6 +51,7 @@ export default class DataSourceTest extends React.Component<IProps, IState> {
     }
 
     fetchDataSourceStatus = () => {
+        // Realiza uma requisição do status da Data Source.
         fetch.status(this.state.dataSource)
         .then(status => {
             this.setState({
@@ -71,11 +72,11 @@ export default class DataSourceTest extends React.Component<IProps, IState> {
     render() {
         return <>
         <Modal show={this.state.modal} onHide={this.hideModal}>
-            <Modal.Header>
+            <ModalHeader>
                 { this.state.dataSource.label }
-            </Modal.Header>
-            <Modal.Body className="text-center">
-                <h4>Test Data Source</h4>
+            </ModalHeader>
+            <ModalBody className="text-center">
+                    <h4>Test Data Source</h4>
                 <div className="p-3"/>
                 <Button
                     variant="success"
@@ -116,17 +117,20 @@ export default class DataSourceTest extends React.Component<IProps, IState> {
                         </tr>
                         </tbody>
                     </table>
-            </Modal.Body>
-            <Modal.Footer>
-                <Button variant="secondary" onClick={this.hideModal}>Cancel</Button>
-            </Modal.Footer>
+            </ModalBody>
+            <ModalFooter>
+                <Button
+                    variant="secondary"
+                    onClick={this.hideModal}>
+                    Cancel
+                </Button>
+            </ModalFooter>
         </Modal>
         <Button
             className="btn btn-light text-primary mx-2 tootiped-component"
             onClick={this.showModal}>
             <i className="material-icons">network_check</i>
-            <span className="tooltiptext">Test Data Source =
-                {this.props.dataSource.id}</span>
+            <span className="tooltiptext">Test Data Source</span>
         </Button>
         </>;
     }

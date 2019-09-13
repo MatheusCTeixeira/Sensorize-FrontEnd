@@ -3,7 +3,10 @@ import { Button, Modal, Form } from "react-bootstrap";
 
 import { ChartController } from "./ChartController";
 
+import {NotificationManager} from "react-notifications";
+
 import { IChart } from "../Types/ChartType";
+import { addChart } from "../Comunication/Chart";
 
 /* ────────────────────────────────────────────────────────────────────────── */
 
@@ -47,12 +50,20 @@ export default class ChartPrompt
         if (this.controller.checkForNullInputs())
             throw Error("Invalid Input Fields");
 
-        const chart = this.controller.readInput();
-        // TODO Buscar do servidor o ID.
-        chart.id = Math.random();
-
-        this.props.addCallback(chart);
+        let chart = this.controller.readInput();
         this.hideModal();
+
+        // TEST testar a comunicação.
+        addChart(chart)
+        .then(addedChart => {
+            chart = addedChart;
+            this.props.addCallback(chart);
+
+            NotificationManager.success("Chart Added!");
+        })
+        .catch(err => {
+            NotificationManager.error("Could not add Chart!");
+        });
     }
 
     listDataSources: () => React.ReactNode[] = () => {

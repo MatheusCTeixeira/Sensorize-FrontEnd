@@ -1,7 +1,10 @@
 import React from "react";
+import ModalHeader from "react-bootstrap/ModalHeader";
+import {NotificationManager} from "react-notifications";
+import { Button, Form, Modal, FormLabel, FormText, ModalBody, ModalFooter } from "react-bootstrap";
 
 import { IDataSource } from "../Types/DataSourceType";
-import { Button, Form, Modal } from "react-bootstrap";
+import { updateDataSource } from "../Comunication/DataSource";
 import { DataSourceController } from "./DataSourceController";
 
 /* ────────────────────────────────────────────────────────────────────────── */
@@ -43,12 +46,28 @@ export default class DataSourceEdit
 /* ────────────────────────────────────────────────────────────────────────── */
 
     edit = () => {
-        const editDtSrc = this.controller.readInput();
-        editDtSrc.id = this.state.dataSource.id;
-
-        this.props.editCallback(editDtSrc);
+        let editDtSrc = this.controller.readInput();
+        editDtSrc.id = this.props.dataSource.id; // O ID se mantém.
 
         this.hideModal();
+
+        // Faz a requisição para atualizar os dados do Data Source. Se os tudo
+        // ocorrer corretamente uma mensagem de sucesso é exibida, caso contrá-
+        // rio, uma mensagem de error é gerada.
+        updateDataSource(editDtSrc)
+        .then(updatedDataSource => {
+            editDtSrc = updatedDataSource;
+
+            // Adiciona na lista de Data Sources.
+            this.props.editCallback(updatedDataSource);
+
+            NotificationManager.success("Data Source updated!");
+
+        })
+        .catch(err => {
+            NotificationManager.error("Unable to update Data Source!");
+
+        });
     }
 
 /* ────────────────────────────────────────────────────────────────────────── */
@@ -58,60 +77,61 @@ export default class DataSourceEdit
         <Form>
         <Form.Group controlId="formBasicEmail">
 
-            <Form.Label>IP Address</Form.Label>
+            <FormLabel>IP Address</FormLabel>
             <input
                 type="text"
                 className="form-control"
                 placeholder="Data Source IP"
                 defaultValue={this.state.dataSource.ipAddress}
                 ref={this.controller.ipAddress} />
-            <Form.Text className="text-muted">
+            <FormText className="text-muted">
             Data Source IP Address. Eg. 127.0.0.1
-            </Form.Text>
+            </FormText>
 
-            <Form.Label>Port Number</Form.Label>
+            <FormLabel>Port Number</FormLabel>
             <input
                 type="number"
                 className="form-control"
                 placeholder="Port Number"
                 defaultValue={this.state.dataSource.port.toString()}
                 ref={this.controller.port} />
-            <Form.Text className="text-muted">
-            Data Source Port Number. Eg. 3000
-            </Form.Text>
+            <FormText className="text-muted">
+            Port Number ≥ 3000.
+            </FormText>
 
-            <Form.Label>Label</Form.Label>
+            <FormLabel>Label</FormLabel>
             <input
                 type="text"
                 className="form-control"
                 placeholder="Data Source Label"
                 defaultValue={this.state.dataSource.label}
                 ref={this.controller.label} />
-            <Form.Text className="text-muted">
+            <FormText className="text-muted">
             Data Source Label. Eg. Sensor #1
-            </Form.Text>
+            </FormText>
 
-            <Form.Label>Data Type</Form.Label>
+            <FormLabel>Data Type</FormLabel>
             <input
                 type="text"
                 className="form-control"
                 placeholder="Data Type"
                 defaultValue={this.state.dataSource.dataType}
                 ref={this.controller.dataType} />
-            <Form.Text className="text-muted">
+            <FormText className="text-muted">
             Continuous or Discrete.
-            </Form.Text>
+            </FormText>
 
-            <Form.Label>Sample Frequency</Form.Label>
+            <FormLabel>Sample Frequency</FormLabel>
             <input
                 type="number"
+                step=".1"
                 className="form-control"
                 placeholder="Sample Frequency"
                 defaultValue={this.state.dataSource.sampleFrequency.toString()}
                 ref={this.controller.sampleFrequency}/>
-            <Form.Text className="text-muted">
+            <FormText className="text-muted">
             Sample Frequency ≤ 4Hz.
-            </Form.Text>
+            </FormText>
 
         </Form.Group>
         </Form>
@@ -121,13 +141,13 @@ export default class DataSourceEdit
     render(): React.ReactNode {
         return (<>
         <Modal show={this.state.modal} onHide={this.hideModal}>
-            <Modal.Header>
+            <ModalHeader>
                 { this.state.dataSource.label }
-            </Modal.Header>
-            <Modal.Body>
+            </ModalHeader>
+            <ModalBody>
                 { this.makeBody() }
-            </Modal.Body>
-            <Modal.Footer>
+            </ModalBody>
+            <ModalFooter>
                 <Button
                     variant="secondary"
                     onClick={this.hideModal}>
@@ -138,7 +158,7 @@ export default class DataSourceEdit
                     onClick={this.edit}>
                     Save
                 </Button>
-            </Modal.Footer>
+            </ModalFooter>
         </Modal>
         <Button
             className="btn btn-light text-warning  mx-2 tootiped-component"

@@ -44,7 +44,7 @@ export class DataSourceController {
             port           : parseInt(port),
             label          : label,
             dataType       : dataType,
-            sampleFrequency: parseInt(sampleFrequency),
+            sampleFrequency: parseFloat(sampleFrequency),
         };
 
         return dataSource;
