@@ -21,6 +21,10 @@ As the name implies, it can be anything that emits data. A computer, a sensor, n
 ### Versions
 > From newest to oldest
 
+![Charts](https://github.com/MatheusCTeixeira/Sensorize-FrontEnd/blob/master/state/deepin-screen-recorder_google-chrome_20190915170407.gif)
+
+---
+
 ![Charts](https://github.com/MatheusCTeixeira/Sensorize-FrontEnd/blob/master/state/deepin-screen-recorder_google-chrome_20190913174706.gif)
 
 ---
