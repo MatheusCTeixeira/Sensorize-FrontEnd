@@ -5,14 +5,13 @@ body {
 /* Menu do logo. */
 .top-bar {
     background-color: black             ;
-    font-family     : 'M PLUS 1p', 'Courgette', cursive;
+    box-shadow      : 5px 0px 10px 3px gray;
     font-size       : 50px                ;
     height          : 80px                ;
     padding-left    : 100px               ;
     position        : fixed               ;
     width           : 100%                ;
     z-index         : 1                   ;
-    box-shadow: 5px 0px 10px 3px gray;
 }
 
 .top-bar label {
@@ -22,19 +21,18 @@ body {
 }
 
 .top-bar .hr {
-    position: absolute;
-    color: yellow;
     background-color: yellow;
-    height: 3px;
-    top: 70px;
-    left: 0px;
-    width: 100%;
-    z-index: 10;
+    height          : 3px;
+    left            : 0px;
+    position        : absolute;
+    top             : 70px;
+    width           : 100%;
+    z-index         : 10;
 }
 
 /* Menu a esquerda. */
 .left-menu {
-    background-color: rgb(189, 184, 184);
+    background-color: white;
     height          : 100%   ;
     left            : -180px ;
     padding-left    : 20px   ;
@@ -63,7 +61,7 @@ body {
 
 /* Item default do avatar. */
 .avatar > img {
-    color    : yellow              ;
+    color    : yellow             ;
     font-size: 60px                 ;
     left     : 50%                  ;
     position : relative             ;
@@ -75,14 +73,14 @@ body {
 
 /* Item do menu. */
 .menu-item {
-    border       : 1px solid black  ;
+    border       : 1px solid black    ;
+    bottom       : 0                  ;
     color        : black              ;
-    padding      : 1px               ;
+    margin-bottom: 3px                ;
+    margin-top   : 3px                ;
+    padding      : 1px                ;
     transition   : border 500ms linear;
     width        : 100%               ;
-    margin-top:3px;
-    margin-bottom:3px;
-    bottom:     0;
 
 }
 
@@ -100,20 +98,20 @@ body {
 /* Quando o mause está sobre os itens do menu. */
 .menu-item:hover {
     border          : 1px solid rgb(158, 112, 26);
-    background-color: black                    ;
+    background-color: black                      ;
     color           : yellow                     ;
     cursor          : pointer                    ;
 }
 
 /* Onde os dados são renderizados. */
 .viewport {
-    position  : absolute;
-    left      : 20px   ;
-    top       : 80px    ;
-    right     : 0px     ;
-    text-align: center  ;
-    margin-bottom: 300px;
-    z-index: -10;
+    left         : 20px    ;
+    margin-bottom: 300px   ;
+    position     : absolute;
+    right        : 0px     ;
+    text-align   : center  ;
+    top          : 80px    ;
+    z-index      : -10     ;
 }
 
 .text-black {
@@ -122,35 +120,37 @@ body {
 
 .card {
     border-radius: 0px;
-    color: black;
+    color        : black;
 }
 
 .header {
     background-color: black;
-    text-align: center;
-    padding: 20px;
-    position: fixed;
-    width: 100%;
-    margin-bottom: 40px;
-    box-shadow: 5px 5px 15px 15px gray;
+    font-size       : 30px;
+    margin-bottom   : 40px;
+    margin-top      : 10px solid black;
+    padding-top     : 20px;
+    position        : fixed;
+    text-align      : center;
+    width           : 100%;
+    box-shadow      : 5px 5px 15px 15px gray;
 }
 
 .header .item {
-    display: inline;
+    display   : inline;
+    left      : 50%;
     text-align: center;
-    left: 50%;
 }
 
 .header .item a {
-    color: yellow;
+    border         : 1px solid transparent;
+    color          : yellow;
     text-decoration: none;
-    border: 1px solid transparent;
 }
 
 .header .item + .login a {
-    color: blue;
+    border-top     : 3px solid transparent;
+    color          : blue;
     text-decoration: none;
-    border-top: 3px solid transparent;
 }
 
 .header .item a:hover {
@@ -163,11 +163,11 @@ body {
 
 .content .topic {
     padding-top: 100px;
-    margin-top: 100px;
+    margin-top : 100px;
 }
 
 .gap {
-    padding: 50px;
+    padding: 30px;
 }
 
 .footer {

@@ -12,10 +12,11 @@ import "./Styles/datasource-card.css";
 import "./Styles/statistic-style.css";
 import 'react-notifications/lib/notifications.css';
 import { LoginScreen } from './Login/LoginScreen';
-import {Home} from './Home';
+import {Menus} from './Menus';
 import { Intro } from './Intro';
 import DisplaySensor from './Chart/DisplaySensor';
 import { createBrowserHistory } from 'history';
+import { Home } from './Home/Home';
 
 /* ────────────────────────────────────────────────────────────────────────── */
 
@@ -45,12 +46,13 @@ export default class App extends React.Component<IProps, IState> {
             <Switch>
                 <Route exact path  = "/"  component = {Intro} />
                 <Route path  = "/login" component = {LoginScreen} />
-                <Route path  = "/*"  component = {Home} />
+                <Route path  = "/*"  component = {Menus} />
             </Switch>
             <div className="viewport">
-                <Route path="/datasource" component={DataSource} />
-                <Route exact path="/chart" component={Chart} />
-                <Route path="/chart/:id" component={DisplaySensor} />
+                <Route path="/home"              component={Home}/>
+                <Route path="/datasource"       component={DataSource} />
+                <Route path="/chart"      exact component={Chart} />
+                <Route path="/chart/:id"        component={DisplaySensor} />
             </div>
         </Router>
     );

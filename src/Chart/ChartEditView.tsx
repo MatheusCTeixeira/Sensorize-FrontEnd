@@ -8,6 +8,7 @@ import { Form } from "react-bootstrap";
 
 import { ChartController } from "./ChartController";
 import { updateChart } from "../Comunication/Chart";
+import { IDataSource } from "../Types/DataSourceType";
 
 /* ────────────────────────────────────────────────────────────────────────── */
 
@@ -20,6 +21,7 @@ interface IProps {
 // A interface IState.
 interface IState extends IProps {
     modal: boolean,
+    dataSources?: IDataSource[]
 }
 
 // Esta classe é responsável pela edição dos dados de um Chart.
@@ -31,6 +33,18 @@ export default class ChartEdit extends React.Component<IProps, IState> {
         super(props);
         this.state = { ...props, modal: false, };
 
+    }
+
+    componentDidMount = () => {
+        this.controller.fetchDataSources()
+        .then(dataSources => {
+            this.setState({
+                dataSources: dataSources
+            });
+        })
+        .catch(error => {
+            NotificationManager.error("Could not load Data Sources!");
+        });
     }
 
 /* ────────────────────────────────────────────────────────────────────────── */
@@ -45,6 +59,8 @@ export default class ChartEdit extends React.Component<IProps, IState> {
 
         // TEST testar comunicação.
         let chart: IChart = this.controller.readInput();
+        chart.id = this.state.chart.id;
+
         updateChart(chart)
         .then(updatedChart => {
             chart = updatedChart;
@@ -55,8 +71,6 @@ export default class ChartEdit extends React.Component<IProps, IState> {
         .catch(err => {
             NotificationManager.error("Could not update Chart!");
         })
-
-        chart.id = this.state.chart.id;
 
         this.hideModal();
     }
@@ -72,9 +86,14 @@ export default class ChartEdit extends React.Component<IProps, IState> {
         this.setState({ modal: false });
     }
 
-    listDataSources: () => React.ReactNode[] = () => {
-        return this.controller.fetchAllDataSources().map(
-            (_, i) => <option key={i} value={_.id}>{_.label}</option>
+    listDataSources = () => {
+        return this.state.dataSources.map(
+            (dataSource, i) => (
+                <option
+                    key={i}
+                    value={dataSource.id}>
+                    {dataSource.label}
+                </option>)
         )
     }
 
@@ -102,7 +121,7 @@ export default class ChartEdit extends React.Component<IProps, IState> {
                 <option value="Bar Chart">Bar Chart</option>
                 <option value="Line Chart">Line Chart</option>
                 <option value="Pie Chart">Pie Chart</option>
-                <option value="Scatter Chart">Scatter Plot</option>
+                <option value="Scatter Plot">Scatter Plot</option>
             </select>
             <FormText className="text-muted">
             Chart Type. Eg. Line Chart, Pie Chart, ...
@@ -137,6 +156,7 @@ export default class ChartEdit extends React.Component<IProps, IState> {
     }
 
     render(): React.ReactNode {
+        if (!this.state.dataSources) return null;
         return (<>
         <Modal show={this.state.modal} onHide={this.hideModal}>
             <Modal.Header>

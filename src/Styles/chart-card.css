@@ -4,8 +4,8 @@
 
 .chart-card .chart-features tr {
     border-bottom: 1px dashed darkgray;
-    text-align: left;
-    transition: background-color 300ms linear;
+    text-align   : left;
+    transition   : background-color 300ms linear;
 }
 
 .chart-card .chart-features tr:hover {
@@ -14,5 +14,5 @@
 
 .chart-card .chart-features tr > td:first-child {
     font-weight: 600;
-    width: 50%;
+    width      : 50%;
 }

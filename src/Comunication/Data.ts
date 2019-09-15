@@ -26,7 +26,6 @@ class fetch {
                 } as IChartInputType);
             })
             .catch(err => {
-                console.log("error");
                 reject(err);
             });
         });
@@ -48,7 +47,6 @@ class fetch {
                 resolve(data);
             })
             .catch(err => {
-                console.log("error");
                 reject(err);
             });
         });

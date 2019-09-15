@@ -1,61 +1,57 @@
 
 .screen {
-    position: fixed;
-    /* background-image: url("/asset/background1.jpg"); */
     background-size: cover;
-    /* width: 100%; */
-    min-width: 100%;
-    min-height: 100%;
+    min-height     : 100%;
+    min-width      : 100%;
+    position       : fixed;
 }
 
 
 .screen .register {
-    position: absolute;
-    transform: translateX(50%);
-    width: 30%;
-    top: 15%;
-    z-index: 1;
-    filter: opacity(0.85);
     background-color: black;
-    border: 1px solid yellow;
-    color: yellow;
-    padding: 20px;
-    transition: filter 800ms;
+    border          : 1px solid yellow;
+    color           : yellow;
+    filter          : opacity(0.85);
+    padding         : 20px;
+    position        : absolute;
+    top             : 15%;
+    transform       : translateX(50%);
+    transition      : filter 800ms;
+    width           : 30%;
+    z-index         : 1;
 }
 
 .screen .login {
-    position: absolute;
-    float: right;
-    transform: translateX(-50%);
-    right: 0px;
-    top: 15%;
-    width: 30%;
-    padding: 20px;
-    z-index: 1;
-    filter: opacity(0.85);
     background-color: black;
-    border: 1px solid yellow;
-    color: yellow;
-    transition: filter 800ms;
+    border          : 1px solid yellow;
+    color           : yellow;
+    filter          : opacity(0.85);
+    float           : right;
+    padding         : 20px;
+    position        : absolute;
+    right           : 0px;
+    top             : 15%;
+    transform       : translateX(-50%);
+    transition      : filter 800ms;
+    width           : 30%;
+    z-index         : 1;
 }
-.screen .register:hover {
-    filter: opacity(1);
-}
-.screen .login:hover {
+
+.screen :hover {
     filter: opacity(1);
 }
 
 .preview {
-    min-width: 120px;
-    min-height: 120px;;
-    max-height: 120px;
     background-color: gray;
-    border-radius: 50%;
+    border-radius   : 50%;
+    max-height      : 120px;
+    min-height      : 120px;
+    min-width       : 120px;
 }
 
 .frame {
-    text-align: center;
     font-size: 10px;
+    text-align: center;
 }
 
 .frame img {

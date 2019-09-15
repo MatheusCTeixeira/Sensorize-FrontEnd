@@ -5,7 +5,8 @@ import { IDataSource } from "../Types/DataSourceType";
 /* ────────────────────────────────────────────────────────────────────────── */
 
 // Para propósitos de teste apenas.
-const baseAddr = "http://localhost:5000";
+// const baseAddr = "http://localhost:5000";
+const baseAddr = "";
 
 // Busca os dados de uma Data Source específica.
 export function fetchDataSource(id: number): Promise<IDataSource> {
@@ -23,7 +24,7 @@ export function fetchDataSource(id: number): Promise<IDataSource> {
 }
 
 // Busca os dados de todas as Data Sources relacionadas com o usuário logado.
-export function fetchAllDataSources() : Promise<any> {
+export function fetchAllDataSources() : Promise<IDataSource[]> {
 
     return axios.get(baseAddr + `/api/datasources/`, {
         withCredentials: true,

@@ -1,13 +1,14 @@
 import React         from "react"           ;
 import ChartCard     from "./ChartCard"     ;
 import ChartPrompt   from "./ChartAddView"   ;
-import DisplaySensor from "./DisplaySensor";
+
+import {NotificationManager} from "react-notifications";
 
 import { IChart } from "../Types/ChartType";
 
-import { BrowserRouter as Router, Route } from "react-router-dom";
 
 import * as mock from "../mock";
+import { fetchAllCharts } from "../Comunication/Chart";
 
 /* ────────────────────────────────────────────────────────────────────────── */
 
@@ -32,9 +33,15 @@ export default class Chart extends React.Component<IProps, IState> {
     }
 
     componentDidMount = () => {
-        this.setState({
-            charts: mock.charts,
+        fetchAllCharts()
+        .then(charts => {
+            this.setState({
+                charts: charts,
+            });
         })
+        .catch(error => {
+            NotificationManager.error("Could not fetch chats!");
+        });
     }
 
     componentWillUnmount = () => {
@@ -50,7 +57,7 @@ export default class Chart extends React.Component<IProps, IState> {
         }));
     };
 
-    // Edita um Chart;
+    // Edita um Chart.
     editChart = (chart: IChart) => {
         this.setState((state, props) => {
             // Verifica qual Chart foi alterado.
@@ -104,18 +111,6 @@ export default class Chart extends React.Component<IProps, IState> {
             <ChartPrompt addCallback={this.addChart} />
             {this.makeList()}
         </>);
-
-        {/* <Router>
-            <div>
-                <Route path="/chart" exact
-                    render={(props:IProps) =>
-                        <ChartPrompt {...props} addCallback={this.addChart}/>}/>
-
-                <Route path="/chart" exact component={this.makeList}/>
-
-                <Route path="/plot/:id" component={DisplaySensor}/>
-            </div>
-        </Router>); */}
     }
 
 }

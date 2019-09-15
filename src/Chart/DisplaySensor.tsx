@@ -9,6 +9,8 @@ import Graph from "../Graph/Chart";
 import { IChartInputType } from "../Types/ChartInputType";
 import { Statistic } from "../Graph/Statistic";
 
+import {NotificationManager} from "react-notifications";
+
 import { fetch } from "../Comunication/Data";
 import { IDataSource } from "../Types/DataSourceType";
 
@@ -70,8 +72,14 @@ export default class DisplaySensor extends React.Component<IProps, IState> {
     }
 
     componentDidMount = () => {
-        this.setState({
-            chart: fetchChart(parseInt(this.props.match.params.id)),
+        fetchChart(parseInt(this.props.match.params.id))
+        .then(chart => {
+            this.setState({
+                chart: chart,
+            });
+        })
+        .catch(error => {
+            NotificationManager.error("Could not load Chart!");
         });
     }
 
@@ -82,18 +90,6 @@ export default class DisplaySensor extends React.Component<IProps, IState> {
 /* ────────────────────────────────────────────────────────────────────────── */
 
     fetchBar = (dataSource: IDataSource) => {
-        /* const Y = Math.random()*50;
-        const deviation = () => Math.random() * 10;
-
-        const Cat = ["A", "B", "C", "D", "E", "F", "G"];
-
-        const data: IChartInputType = {
-            dataSource: this.state.chart.dataSources[Math.floor(Math.random()*3)],
-            data: [
-                { x: Cat[Math.floor(Math.random()*Cat.length)], y: Y + deviation() },
-            ]
-        };
-        this.notifyAll(data); */
         if (!this.lastDataFetched.has(dataSource.id))
             this.lastDataFetched.set(dataSource.id, new Date());
 
@@ -106,29 +102,6 @@ export default class DisplaySensor extends React.Component<IProps, IState> {
             this.notifyAll(data)
         })
         .catch(err => console.log(err));
-    }
-
-    fetchScatter = () => {
-        const Y = Math.random()*50;
-        const deviation = () => Math.random() * 10;
-        const dateDeviation = () => {
-            const date = new Date();
-            date.setMilliseconds(date.getMilliseconds() + deviation()* 10);
-            return date;
-        };
-
-        const data: IChartInputType = {
-            dataSource: this.state.chart.dataSources[Math.floor(Math.random()*3)],
-            data: [
-                { x: dateDeviation(), y: Y + deviation() },
-                { x: dateDeviation(), y: Y + deviation() },
-                { x: dateDeviation(), y: Y + deviation() },
-                { x: dateDeviation(), y: Y + deviation() },
-                { x: dateDeviation(), y: Y + deviation() },
-                { x: dateDeviation(), y: Y + deviation() },
-            ]
-        };
-        this.notifyAll(data);
     }
 
     fetchTimeseries = (dataSource: IDataSource) => {
@@ -145,19 +118,6 @@ export default class DisplaySensor extends React.Component<IProps, IState> {
             this.notifyAll(data)
         })
         .catch(err => console.log(err));
-    }
-
-    fetchPie = () => {
-        const Y = Math.random()*50;
-        const deviation = () => Math.random() * 10;
-
-        const data: IChartInputType = {
-            dataSource: this.state.chart.dataSources[Math.floor(Math.random()*3)],
-            data: [
-                { x: new Date(), y: Y + deviation() },
-            ]
-        };
-        this.notifyAll(data);
     }
 
     /**

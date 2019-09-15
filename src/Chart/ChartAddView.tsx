@@ -7,6 +7,7 @@ import {NotificationManager} from "react-notifications";
 
 import { IChart } from "../Types/ChartType";
 import { addChart } from "../Comunication/Chart";
+import { IDataSource } from "../Types/DataSourceType";
 
 /* ────────────────────────────────────────────────────────────────────────── */
 
@@ -18,6 +19,7 @@ interface IProps {
 // A interfaxe IState.
 interface IState extends IProps {
     show: boolean,
+    dataSources?: IDataSource[],
 }
 
 // Esta classe é responsável por adicionar Charts.
@@ -30,6 +32,20 @@ export default class ChartPrompt
         super(props);
         this.state = { ...props, show: false };
     }
+
+    componentDidMount = () => {
+        this.controller.fetchDataSources()
+        .then(dataSources => {
+            this.setState({
+                dataSources: dataSources,
+            });
+        })
+        .catch(error => {
+                NotificationManager.error("Could not load Data Sources!");
+        });
+    }
+
+/* ────────────────────────────────────────────────────────────────────────── */
 
     // Exibe o menu.
     showModal: () => void = () => {
@@ -67,7 +83,7 @@ export default class ChartPrompt
     }
 
     listDataSources: () => React.ReactNode[] = () => {
-        return this.controller.fetchAllDataSources().map(
+        return this.state.dataSources.map(
             (_, i) => <option key={i} value={_.id}>{_.label}</option>
         )
     }
@@ -96,7 +112,7 @@ export default class ChartPrompt
                     <option value = "Bar Chart"    >Bar Chart   </option>
                     <option value = "Line Chart"   >Line Chart  </option>
                     <option value = "Pie Chart"    >Pie Chart   </option>
-                    <option value = "Scatter Chart">Scatter Plot</option>
+                    <option value = "Scatter Plot">Scatter Plot</option>
             </select>
             <Form.Text className="text-muted">
             Chart Type. Eg. Line Chart, Pie Chart, ...
@@ -126,6 +142,7 @@ export default class ChartPrompt
     </>;
 
     render(): React.ReactNode {
+        if (this.state.dataSources == null) return null;
         return (<>
         <div
             className="add-component tootiped-component"

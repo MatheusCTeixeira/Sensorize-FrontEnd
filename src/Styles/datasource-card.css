@@ -4,8 +4,8 @@
 
 .datasource-card .datasource-features tr {
     border-bottom: 1px dashed darkgray;
-    text-align: left;
-    transition: background-color 300ms linear;
+    text-align   : left;
+    transition   : background-color 300ms linear;
 }
 
 .datasource-card .datasource-features tr:hover {
@@ -14,13 +14,13 @@
 
 .datasource-card .datasource-features tr > td:first-child {
     font-weight: 600;
-    width: 50%;
+    width      : 50%;
 }
 
 .table-view tr {
     border-bottom: 1px dashed darkgray;
-    text-align: left;
-    transition: background-color 300ms linear;
+    text-align   : left;
+    transition   : background-color 300ms linear;
 }
 
 .table-view tr:hover {
@@ -29,5 +29,5 @@
 
 .table-view tr > td:first-child {
     font-weight: 600;
-    width: 50%;
+    width      : 50%;
 }

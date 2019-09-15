@@ -16,7 +16,7 @@ export class Intro extends Component<IProps, IState> {
     render() {
         return (
         <>
-        <div className="header" id="top">
+        <div className="header top-bar" id="top">
             <nav className="navigator">
                 <ul className="item">
                     <a href="#sensorize">Sensorize</a>
@@ -35,6 +35,7 @@ export class Intro extends Component<IProps, IState> {
                 </ul>
 
             </nav>
+            <div className="hr" />
         </div>
 
         <div className="content container pt-5 text-black">

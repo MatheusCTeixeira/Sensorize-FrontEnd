@@ -4,6 +4,7 @@ import { IChart } from "../Types/ChartType";
 import { IDataSource } from "../Types/DataSourceType";
 
 import * as mock from "../mock";
+import { fetchAllDataSources } from "../Comunication/DataSource";
 
 export class ChartController {
     label      : React.RefObject<HTMLInputElement> ;
@@ -54,8 +55,8 @@ export class ChartController {
         return chart;
     }
 
-    fetchAllDataSources = () => {
-        return mock.dataSources;
+    fetchDataSources = () => {
+        return fetchAllDataSources();
     }
 
 

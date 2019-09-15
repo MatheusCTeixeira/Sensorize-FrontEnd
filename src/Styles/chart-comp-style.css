@@ -5,37 +5,37 @@
 }
 
 .add-component > i {
-    position: relative;
-    width: 100px;
-    left: 0px;
-    color: black;
-    border: 1px solid gray;
-    font-size: 50px;
-    margin: 20px 5px;
+    border    : 1px solid gray;
+    color     : black;
+    font-size : 50px;
+    left      : 0px;
+    margin    : 20px 5px;
+    position  : relative;
+    width     : 100px;
     transition: background-color 500ms;
 }
 
 .add-component > i:hover {
-    color: yellow;
     background-color: black;
-    cursor: pointer;
+    color           : yellow;
+    cursor          : pointer;
 }
 
 .tooltiptext {
-    margin-top: 20px;
-    position: absolute;
-    padding: 10px;
-    visibility: hidden;
     background-color: black;
-    border-radius: 5px;
-    font-size: 12px;
-    color: white;
+    border-radius   : 5px;
+    color           : white;
+    font-size       : 12px;
+    margin-top      : 20px;
+    padding         : 10px;
+    position        : absolute;
     transition-delay: 0s;
-    width: 200px;
+    visibility      : hidden;
+    width           : 200px;
 }
 
 .tootiped-component:hover > .tooltiptext {
-    visibility: visible;
     transition-delay: 500ms;
-    z-index: 1;
+    visibility      : visible;
+    z-index         : 1;
 }

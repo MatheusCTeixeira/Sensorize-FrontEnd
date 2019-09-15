@@ -46,10 +46,6 @@ export default class DataSource extends React.Component<IProps, IState> {
 
     }
 
-    componentWillUnmount = () => {
-        mock.dataSources.push(...this.state.dataSources);
-    }
-
     // Adiciona uma nova Data Source.
     addDataSource = (dataSource: IDataSource) => {
         this.setState((state, props) => {
