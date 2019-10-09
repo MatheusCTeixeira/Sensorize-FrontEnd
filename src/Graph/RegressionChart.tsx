@@ -53,7 +53,7 @@ export class RegressionChart extends React.Component<IProps, IState> {
                     backgroundColor: "white",
                     showLine       : false,
                 },{
-                    label: "AR Least Square",
+                    label: "Forecast",
                     data : [],
                     fill : false,
                     borderColor    : "black",
@@ -117,12 +117,67 @@ export class RegressionChart extends React.Component<IProps, IState> {
         return data.map(dt => ({x: dt[0], y: dt[1]} as IData));
     }
 
+    // Calcula a variação média de tempo.
+    getDeltaTime(data: Date[]) {
+        const delta: number[] = [];
+
+        if (data.length <= 1)
+            throw Error("Too small");
+
+        for (let i = 1; i < data.length; ++i) {
+            const diff = data[i].getTime() - data[i - 1].getTime();
+            delta.push(diff);
+        }
+
+        const accumalator = delta.reduce((prev, curr) => prev + curr);
+        return accumalator / delta.length;
+    };
+
+    // Faz a convolução dos dados pelos coeficientes.
+    convolve(data: number[], coefficients: number[]) {
+        const len = Math.min(data.length, coefficients.length);
+        const dataLen = data.length;
+
+        let output = 0;
+        for (let i = 0; i < len; ++i) {
+            output -= data[dataLen - i - 1] * coefficients[i];
+        }
+
+        return output;
+    }
+
+    forecast(inputData: IData[], degree: number, pointToForecast: number) {
+        let data: [Date, number][] =
+            inputData.map(v => [v.x as Date, v.y]);
+
+        const dT = this.getDeltaTime(data.map(v=>v[0])); // Calcula a variação
+                                                         //  média de tempo.
+
+        for (let i = 0; i < pointToForecast; ++i) {
+            const currentData = data; // Utiliza as amostras mais atuais.
+
+            const t = new timeseries.main(currentData);
+
+            const coeff = t.ARMaxEntropy({degree: degree});
+
+            const output = this.convolve(currentData.map(data => data[1]), coeff);
+
+            const lastDate = currentData[currentData.length - 1][0].getTime();
+
+            const newPoint: [Date, number] = [new Date(lastDate + dT), output];
+
+            data.push(newPoint);
+        }
+
+        return data;
+    }
+
     /**
      * Realiza os calculos estatisticos. Veja:
      * - https://www.npmjs.com/package/timeseries-analysis
      * - http://paulbourke.net/miscellaneous/ar/
      */
-    forecast = (data: IData[]) => {
+    getStimatedValues = (data: IData[]) => {
         return new Promise<[Date, number][]>((resolve, reject) => {
             const parsedData = this.parseToForecast(data);
             const t = new timeseries.main(parsedData);
@@ -136,15 +191,17 @@ export class RegressionChart extends React.Component<IProps, IState> {
             })
 
             // Reduz os ruídos dos dados.
-            t.smoother({period:10}).save('smoothed');
+            // t.smoother({period:10}).save('smoothed');
             // const bestSettings = t.regression_forecast_optimize();
 
+            resolve(this.forecast(data, 10, 15));
+
             // Processa os dados e retorna o resultado.s
-            resolve(t.sliding_regression_forecast({
+            /* resolve(t.sliding_regression_forecast({
                 method: "ARLeastSquare",
                 sample: data.length,
                 degree: 20,
-            }).output());
+            }).output()); */
         });
     }
 
@@ -175,7 +232,8 @@ export class RegressionChart extends React.Component<IProps, IState> {
          * são realizados.
          */
         if (dataAnalysed.length > 5) {
-            this.forecast(dataAnalysed.slice(-sampleToAnalyse))
+            // console.log(this.forecast(dataAnalysed, 3, 10));
+            this.getStimatedValues(dataAnalysed.slice(-sampleToAnalyse))
             .then(data => {
                 const parsedData = this.parseFromForecast(data);
                 this.chartView.data.datasets[1].data = parsedData;
