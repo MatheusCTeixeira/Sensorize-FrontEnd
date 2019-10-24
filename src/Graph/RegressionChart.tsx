@@ -246,7 +246,7 @@ export class RegressionChart extends React.Component<IProps, IState> {
 
     render = () => {
         return (
-        <div className="container mb-4">
+        <div className="container mb-4 ml-2 mr-2">
             <div className="row justify-content-start">
             <div style={{width: "100%", height: this.props.height}}>
                 <canvas
